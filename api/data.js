@@ -32,6 +32,17 @@ module.exports = async (req, res) => {
       const bodyStr = Buffer.concat(chunks).toString('utf8');
       const data = JSON.parse(bodyStr);
 
+      if (!data || typeof data !== 'object' || !Array.isArray(data.rows)) {
+        res.status(400).json({ ok: false, error: 'invalid_payload: "rows" deve ser um array' });
+        return;
+      }
+      for (const row of data.rows) {
+        if (!row || typeof row !== 'object' || typeof row.id !== 'string' || !row.id) {
+          res.status(400).json({ ok: false, error: 'invalid_payload: cada linha precisa de um "id"' });
+          return;
+        }
+      }
+
       const blob = await put(PATHNAME, JSON.stringify(data), {
         access: 'public',
         addRandomSuffix: false,
