@@ -1,7 +1,8 @@
 # Comparativo da Negociação Coletiva CAIXA 2026
 
-Página colaborativa comparando o ACT vigente, as propostas da CAIXA (1ª, 2ª e 3ª/Final) e a pauta
-de reivindicações dos empregados na Data-Base 2026.
+Página colaborativa comparando o ACT vigente, a 3ª Proposta / Final da CAIXA e a pauta de
+reivindicações dos empregados na Data-Base 2026. (Já houve 1ª e 2ª propostas na negociação, mas o
+comparativo mostra só a versão final, para não confundir quem consulta.)
 
 ## Como funciona
 
@@ -26,8 +27,8 @@ de reivindicações dos empregados na Data-Base 2026.
 
 ## Fonte (opcional) e histórico de alterações
 
-Quem edita qualquer campo já existente na tabela (valor ou selo de indicador) e clica em **"Salvar
-alterações"** vê, antes de salvar, um resumo de tudo que mudou (tema, coluna, valor antigo → novo).
+Quem edita qualquer campo já existente na tabela e clica em **"Salvar alterações"** vê, antes de
+salvar, um resumo de tudo que mudou (tema, coluna, valor antigo → novo).
 Cada alteração pode receber uma fonte — um link, ou um arquivo (PDF ou imagem, até 4MB) anexado ali
 mesmo, que é enviado automaticamente e vira o link da fonte. A fonte não é obrigatória para salvar;
 a página apenas incentiva o envio ("Envie a fonte para ampliarmos a biblioteca de informações").
@@ -65,15 +66,15 @@ Depois de ativado (pode levar alguns minutos para os primeiros dados aparecerem)
 
 Ambos são gratuitos no plano Hobby dentro do limite de eventos mensal.
 
-## Indicador de melhora/piora nas propostas
+## Indicador de melhora/piora (calculado automaticamente)
 
-Cada proposta da Caixa (1ª, 2ª, 3ª/Final) exibe um selo antes do valor indicando se aquele ponto
-melhorou, piorou ou ficou igual em relação ao ACT vigente (2024–2026), com o percentual quando
-aplicável. O selo é editável do mesmo jeito que os demais campos, em **"Editar página"**. Só foram
-preenchidos automaticamente os casos em que o próprio texto da proposta já afirma algo objetivo
-(ex.: "Sem alteração" → Igual; percentuais diretamente comparáveis, como a contribuição da Caixa
-subindo de 6,5% para 8%/9%). Os demais ficam marcados como "Impacto a avaliar" até alguém revisar
-e preencher manualmente.
+A 3ª Proposta / Final exibe um selo antes do valor indicando se aquele ponto melhorou, piorou ou
+ficou igual em relação ao ACT vigente (2024–2026), com o percentual quando aplicável. O selo não é
+digitado — é recalculado a cada carregamento comparando o número (% ou R$) de "Como está hoje" com
+o da proposta, então nunca fica desatualizado depois de uma edição no valor. Só é preenchido quando
+há um único número comparável de cada lado, ou quando o próprio texto já afirma algo objetivo (ex.:
+"Sem alteração" → Igual). Os demais casos ficam marcados como "Impacto a avaliar", exigindo leitura
+humana em vez de arriscar uma comparação errada.
 
 A 3ª Proposta / Final tem um segundo selo, na mesma lógica, comparando-a com a pauta de
 **reivindicações** (não só com o ACT vigente). Esse segundo selo (campo `p3ir`) começa em branco

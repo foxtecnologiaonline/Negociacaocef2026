@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Comparativo da Negociação CAIXA 2026</title>
-<meta name="description" content="Comparativo tema a tema entre o Acordo Coletivo vigente, as três propostas apresentadas pela Caixa e a pauta de reivindicações dos empregados na Data-Base 2026.">
+<meta name="description" content="Comparativo tema a tema entre o Acordo Coletivo vigente, a 3ª Proposta / Final apresentada pela Caixa e a pauta de reivindicações dos empregados na Data-Base 2026.">
 <meta name="theme-color" content="#003DA5">
 <meta property="og:title" content="Comparativo da Negociação CAIXA 2026">
-<meta property="og:description" content="Mapa da Negociação 2026. Comparativo tema a tema do ACT, das propostas da Caixa e da pauta de reivindicações.">
+<meta property="og:description" content="Mapa da Negociação 2026. Comparativo tema a tema do ACT, da 3ª Proposta / Final da Caixa e da pauta de reivindicações.">
 <meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23003DA5'/%3E%3Cline x1='16' y1='16' x2='48' y2='48' stroke='%23FFFFFF' stroke-width='10' stroke-linecap='round'/%3E%3Cline x1='48' y1='16' x2='16' y2='48' stroke='%23F39200' stroke-width='10' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -44,7 +44,6 @@
 
     --c-hoje: #7A889E;      --c-hoje-bg: rgba(122, 136, 158, 0.10);
     --c-p1:   #0056C4;      --c-p1-bg:   rgba(0, 86, 196, 0.08);
-    --c-p2:   #00308F;      --c-p2-bg:   rgba(0, 48, 143, 0.08);
     --c-p3:   #003DA5;      --c-p3-bg:   rgba(0, 61, 165, 0.10);
     --c-reiv: #F39200;      --c-reiv-bg: rgba(243, 146, 0, 0.10);
 
@@ -231,8 +230,6 @@
     outline: none;
   }
   .field--hoje { border-left-color: var(--c-hoje); background: var(--c-hoje-bg); }
-  .field--p1   { border-left-color: var(--c-p1);   background: var(--c-p1-bg); }
-  .field--p2   { border-left-color: var(--c-p2);   background: var(--c-p2-bg); }
   .field--p3   { border-left-color: var(--c-p3);   background: var(--c-p3-bg); }
   .field--reiv { border-left-color: var(--c-reiv); background: var(--c-reiv-bg); }
 
@@ -566,8 +563,6 @@
     }
     .field:last-child { border-right: none; }
     .field--hoje { border-top-color: var(--c-hoje); }
-    .field--p1   { border-top-color: var(--c-p1); }
-    .field--p2   { border-top-color: var(--c-p2); }
     .field--p3   { border-top-color: var(--c-p3); }
     .field--reiv { border-top-color: var(--c-reiv); }
     .field.pending { border-top-color: var(--pending-line); }
@@ -584,7 +579,7 @@
 <div class="hero">
   <p class="hero__kicker">Negociação Coletiva CAIXA · Data-Base 2026</p>
   <h1>Mapa da Negociação 2026</h1>
-  <p>Comparativo tema a tema entre o acordo vigente, as três propostas apresentadas pela Caixa e a pauta de reivindicações dos empregados.</p>
+  <p>Comparativo tema a tema entre o acordo vigente, a 3ª Proposta / Final apresentada pela Caixa e a pauta de reivindicações dos empregados.</p>
   <div class="stats">
     <div class="stat"><b id="statTemas">–</b><span>temas mapeados</span></div>
     <div class="stat"><b id="statAt">–</b><span>última atualização</span></div>
@@ -792,8 +787,6 @@
 
   var COLS = [
     { key:"hoje", label:"Como está hoje", cls:"field--hoje" },
-    { key:"p1",   label:"1ª Proposta",     cls:"field--p1", withIndicator:true },
-    { key:"p2",   label:"2ª Proposta",     cls:"field--p2", withIndicator:true },
     { key:"p3",   label:"3ª Proposta / Final", cls:"field--p3", withIndicator:true },
     { key:"reiv", label:"Reivindicação",   cls:"field--reiv" },
   ];
@@ -1024,8 +1017,6 @@
       '<h4>Como ler</h4>' +
       '<ul>' +
       '<li><span class="swatch" style="background:var(--c-hoje)"></span> Como está hoje — Acordo vigente (ACT 2024–2026)</li>' +
-      '<li><span class="swatch" style="background:var(--c-p1)"></span> 1ª Proposta da Caixa</li>' +
-      '<li><span class="swatch" style="background:var(--c-p2)"></span> 2ª Proposta da Caixa (10/09)</li>' +
       '<li><span class="swatch" style="background:var(--c-p3)"></span> 3ª Proposta / Final da Caixa (17/09)</li>' +
       '<li><span class="swatch" style="background:var(--c-reiv)"></span> Reivindicações dos Empregados (Minuta 2026–2028)</li>' +
       '<li><span class="swatch" style="background:var(--pending-line)"></span> Sem informação confirmada — pendente</li>' +
