@@ -49,6 +49,7 @@ module.exports = async (req, res) => {
         addRandomSuffix: false,
         allowOverwrite: true,
         contentType: 'application/json',
+        cacheControlMaxAge: 0,
         token: process.env.BLOB_READ_WRITE_TOKEN,
       });
 

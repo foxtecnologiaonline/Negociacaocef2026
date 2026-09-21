@@ -459,36 +459,6 @@
   .suggestItem .meta { font-size: 11.5px; color: var(--ink-soft); }
   .suggestList__empty { font-size: 13px; color: var(--ink-soft); font-style: italic; padding: 4px 2px; }
 
-  /* ---------- HISTÓRICO DE ALTERAÇÕES ---------- */
-  .changelogSection {
-    max-width: var(--content-max);
-    margin: 0 auto 8px;
-    padding: 0 20px;
-  }
-  .changelogSection > h2 {
-    font-family: var(--serif);
-    font-size: 17px;
-    margin: 0 0 4px;
-    color: var(--blue-800);
-  }
-  .changelogSection > p { margin: 0 0 10px; font-size: 13px; color: var(--ink-soft); }
-  .changelogList { display: grid; gap: 8px; }
-  .changelogItem {
-    background: var(--paper-card);
-    border: 1px solid var(--line);
-    border-left: 3px solid var(--c-p1);
-    border-radius: 6px;
-    padding: 10px 12px;
-    font-size: 13px;
-  }
-  .changelogItem .meta { font-size: 11.5px; color: var(--ink-soft); margin-bottom: 4px; }
-  .changelogItem .diff { color: var(--ink); margin-bottom: 4px; white-space: pre-line; }
-  .changelogItem .diff .old { color: var(--ink-soft); text-decoration: line-through; }
-  .changelogItem .diff .new { color: var(--ink); font-weight: 600; }
-  .changelogItem .src { font-size: 11.5px; }
-  .changelogItem .src a { color: var(--blue-700); }
-  .changelogList__empty { font-size: 13px; color: var(--ink-soft); font-style: italic; padding: 4px 2px; }
-
   /* ---------- MODAL: CONFIRMAR ALTERAÇÕES (fonte opcional) ---------- */
   .modalOverlay {
     position: fixed;
@@ -716,12 +686,6 @@
 </div>
 
 <main id="main"></main>
-
-<div class="changelogSection" id="changelogSection">
-  <h2>Histórico de alterações</h2>
-  <p>Toda edição feita na tabela acima fica registrada aqui, com a fonte informada, quando enviada.</p>
-  <div id="changelogList" class="changelogList"></div>
-</div>
 
 <div class="bar">
   <div class="bar__inner">
@@ -1251,48 +1215,10 @@
       return finishSave();
     }).then(function () {
       closeConfirmModal();
-      loadChangelog();
     }).catch(function (err) {
       btn.disabled = false;
       var detail = (err && err.message) ? err.message : "";
       confirmStatusEl.textContent = "Não deu para registrar a alteração agora." + (detail ? " (" + detail + ")" : " Tente de novo.");
-    });
-  }
-
-  // ---------------- HISTÓRICO DE ALTERAÇÕES ----------------
-  var changelogListEl = document.getElementById("changelogList");
-
-  function renderChangelog(list) {
-    if (!list || !list.length) {
-      changelogListEl.innerHTML = '<div class="changelogList__empty">Nenhuma alteração registrada ainda.</div>';
-      return;
-    }
-    changelogListEl.innerHTML = list.map(function (c) {
-      var when = "";
-      try {
-        when = new Date(c.at).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
-      } catch (e) {}
-      var who = c.editor ? escapeHtml(c.editor) : "Anônimo";
-      var isLink = /^https?:\/\//i.test(c.source || "");
-      var srcHtml = isLink
-        ? '<a href="' + escapeHtml(c.source) + '" target="_blank" rel="noopener noreferrer nofollow">Ver fonte</a>'
-        : escapeHtml(c.source || "não informada");
-      return '<div class="changelogItem">' +
-        '<div class="meta">' + who + (when ? " · " + when : "") + ' · ' + escapeHtml(c.tema) + ' · ' + escapeHtml(c.colLabel) + '</div>' +
-        '<div class="diff"><span class="old">' + escapeHtml(truncate(c.oldValue, 100)) + '</span> → <span class="new">' + escapeHtml(truncate(c.newValue, 100)) + '</span></div>' +
-        '<div class="src">Fonte: ' + srcHtml + '</div>' +
-      '</div>';
-    }).join("");
-  }
-
-  function loadChangelog() {
-    fetch("/api/changelog", { cache: "no-store" }).then(function (r) {
-      if (!r.ok) throw new Error("http_" + r.status);
-      return r.json();
-    }).then(function (data) {
-      renderChangelog(data && data.changes);
-    }).catch(function () {
-      changelogListEl.innerHTML = '<div class="changelogList__empty">Não deu para carregar o histórico agora.</div>';
     });
   }
 
@@ -1324,7 +1250,7 @@
 
   function renderSuggestions(list) {
     if (!list || !list.length) {
-      suggestListEl.innerHTML = '<div class="suggestList__empty">Nenhuma sugestão enviada ainda. Seja o primeiro!</div>';
+      suggestListEl.innerHTML = '<div class="suggestList__empty">Nenhuma sugestão enviada ainda.</div>';
       return;
     }
     suggestListEl.innerHTML = list.map(function (s) {
@@ -1375,7 +1301,12 @@
   });
 
   // ---------------- VOTAÇÃO (Aceitável / Insuficiente) ----------------
+  // O voto de cada visitante é identificado no servidor por um cookie httpOnly
+  // (ver api/votes.js) — não depende mais do localStorage, que era fácil de
+  // burlar (bastava limpar o navegador ou chamar a API direto) e não impedia
+  // votos duplicados de verdade.
   var VOTES = {};
+  var MY_VOTES = {};
 
   function voteBoxHtml(row) {
     return '<div class="voteBox" data-vote-row="' + row.id + '">' +
@@ -1389,14 +1320,6 @@
     '</div>';
   }
 
-  function myVoteKey(rowId) { return "voto:" + rowId; }
-  function getMyVote(rowId) {
-    try { return localStorage.getItem(myVoteKey(rowId)) || ""; } catch (e) { return ""; }
-  }
-  function setMyVote(rowId, choice) {
-    try { localStorage.setItem(myVoteKey(rowId), choice); } catch (e) {}
-  }
-
   function renderVoteBox(rowId) {
     var box = document.querySelector('.voteBox[data-vote-row="' + rowId + '"]');
     if (!box) return;
@@ -1407,7 +1330,7 @@
     box.querySelector(".voteBox__counts").textContent = total
       ? ("Aceitável " + pctAceitavel + "% (" + tally.aceitavel + ") · Insuficiente " + (100 - pctAceitavel) + "% (" + tally.insuficiente + ") · " + total + " voto" + (total === 1 ? "" : "s"))
       : "Ainda sem votos — seja o primeiro.";
-    var mine = getMyVote(rowId);
+    var mine = MY_VOTES[rowId] || "";
     box.querySelectorAll(".voteBtn").forEach(function (btn) {
       btn.classList.toggle("voteBtn--active", btn.getAttribute("data-choice") === mine);
     });
@@ -1425,6 +1348,7 @@
       return r.json();
     }).then(function (data) {
       VOTES = (data && data.votes) || {};
+      MY_VOTES = (data && data.myVotes) || {};
       renderAllVoteBoxes();
     }).catch(function () {
       // silencioso — mantém os contadores como estavam
@@ -1437,7 +1361,7 @@
     var box = btn.closest(".voteBox");
     var rowId = box.getAttribute("data-vote-row");
     var choice = btn.getAttribute("data-choice");
-    var previousChoice = getMyVote(rowId);
+    var previousChoice = MY_VOTES[rowId] || "";
     if (previousChoice === choice) return;
 
     // Atualização otimista: reflete o voto na hora, sem esperar o servidor.
@@ -1445,18 +1369,22 @@
     if (previousChoice && tally[previousChoice] > 0) tally[previousChoice] -= 1;
     tally[choice] = (tally[choice] || 0) + 1;
     VOTES[rowId] = tally;
-    setMyVote(rowId, choice);
+    MY_VOTES[rowId] = choice;
     renderVoteBox(rowId);
 
     fetch("/api/votes", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ rowId: rowId, choice: choice, previousChoice: previousChoice })
+      body: JSON.stringify({ rowId: rowId, choice: choice })
     }).then(function (r) {
       if (!r.ok) return r.json().then(function (e) { throw new Error((e && e.error) || ("http_" + r.status)); });
       return r.json();
     }).then(function (data) {
-      if (data && data.votes) { VOTES = data.votes; renderAllVoteBoxes(); }
+      if (data && data.votes) { VOTES = data.votes; MY_VOTES = data.myVotes || MY_VOTES; renderAllVoteBoxes(); }
+      // Reconfirma com o servidor pouco depois: a maioria das leituras
+      // concorrentes com outro voto quase simultâneo se resolve num segundo
+      // fetch, já que o registro por votante evita duplicar contagem.
+      setTimeout(loadVotes, 1500);
     }).catch(function () {
       // mantém o estado otimista mesmo se a confirmação do servidor falhar
     });
@@ -1470,7 +1398,6 @@
   render();
   load();
   loadSuggestions();
-  loadChangelog();
   loadVotes();
 })();
 </script>

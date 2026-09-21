@@ -34,10 +34,11 @@ Cada alteração pode receber uma fonte — um link, ou um arquivo (PDF ou image
 mesmo, que é enviado automaticamente e vira o link da fonte. A fonte não é obrigatória para salvar;
 a página apenas incentiva o envio ("Envie a fonte para ampliarmos a biblioteca de informações").
 
-Depois de confirmado, cada alteração vira uma entrada no **histórico de alterações**, visível
-publicamente na própria página (data/hora, tema, coluna, valor antigo → novo e a fonte, quando
-informada), antes de a tabela principal ser efetivamente atualizada — dando rastreabilidade de quem
-mudou o quê e com base em que fonte, quando disponível.
+Depois de confirmado, cada alteração vira uma entrada no histórico gravado via `/api/changelog`
+(data/hora, tema, coluna, valor antigo → novo e a fonte, quando informada), antes de a tabela
+principal ser efetivamente atualizada — dando rastreabilidade de quem mudou o quê e com base em
+que fonte. **Esse histórico não é exibido na página pública** — fica só no Blob Storage,
+consultável via `GET /api/changelog`, para quem administra a página revisar quando precisar.
 
 ## Sugestões dos visitantes
 
@@ -96,8 +97,12 @@ Cada card tem uma enquete simples: qualquer visitante pode marcar se acha a 3ª 
 aparece imediatamente no próprio card, numa barra de proporção, e é salvo em `/api/votes`
 (Vercel Blob, arquivo `comparativo-votes.json`).
 
-Cada navegador guarda o próprio voto no `localStorage` — dá pra trocar de opinião (o voto anterior
-é descontado e o novo é somado), mas não há login, então isso não impede um voto por pessoa em
-rigor (só evita o caso óbvio de clicar várias vezes sem querer). Não há servidor de tempo real
-(WebSocket/SSE) neste projeto estático: a página busca os votos ao carregar e depois a cada 20s, o
-que já é o suficiente para os relatórios acompanharem a votação "ao vivo" sem precisar recarregar.
+Cada visitante é identificado por um cookie `voter_id` httpOnly, gerado pelo próprio `/api/votes`
+no primeiro acesso — o voto fica registrado no servidor por votante (`comparativo-votes.json` guarda
+`{ voters: { <voter_id>: { <rowId>: "aceitavel" | "insuficiente" } } }` e a contagem exibida é
+calculada a partir desse mapa). Isso permite trocar de opinião a qualquer momento (o voto anterior
+do mesmo tema é substituído, não somado de novo) e impede duplicar voto só limpando o `localStorage`
+ou chamando a API direto, como acontecia antes — falta só um voto por pessoa "de verdade" (várias
+contas de e-mail/CPF), que exigiria login. Não há servidor de tempo real (WebSocket/SSE) neste
+projeto estático: a página busca os votos ao carregar e depois a cada 20s, o que já é o suficiente
+para os relatórios acompanharem a votação "ao vivo" sem precisar recarregar.
