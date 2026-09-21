@@ -682,7 +682,6 @@
   // ---------------- STATE ----------------
   var DATA = SEED;
   var editing = false;
-  var pendingNewRows = null;
   var pendingChanges = [];
 
   function groupRows(rows) {
@@ -833,7 +832,6 @@
         setStatus("Nenhuma alteração detectada.");
         return;
       }
-      pendingNewRows = newRows;
       openConfirmModal(changes);
     }
   });
@@ -873,25 +871,41 @@
     return changes;
   }
 
+  // Busca o estado mais recente do servidor (não o snapshot local, que pode
+  // estar desatualizado se alguém salvou algo enquanto esta pessoa editava) e
+  // aplica só os campos que ELA de fato alterou por cima dele. Isso evita que
+  // um "Salvar" sobrescreva silenciosamente — e sem deixar rastro no log — uma
+  // alteração concorrente de outra pessoa em outro campo.
   function finishSave() {
-    var newState = {
-      updatedAt: new Date().toLocaleDateString("pt-BR"),
-      rows: pendingNewRows
-    };
-    return fetch("/api/data", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newState)
-    }).then(function (r) {
+    return fetch("/api/data", { cache: "no-store" }).then(function (r) {
       if (!r.ok) throw new Error("http_" + r.status);
       return r.json();
-    }).then(function () {
-      DATA = newState;
-      editing = false;
-      btnEdit.textContent = "Editar página";
-      btnCancel.style.display = "none";
-      render();
-      setStatus("Salvo ✅ — alteração registrada no histórico e visível para todos.", true);
+    }).then(function (freshData) {
+      var baseRows = (freshData && freshData.rows && freshData.rows.length) ? freshData.rows : DATA.rows;
+      var mergedRows = baseRows.map(function (r) { return Object.assign({}, r); });
+      pendingChanges.forEach(function (c) {
+        var row = mergedRows.find(function (r) { return r.id === c.rowId; });
+        if (row) row[c.col] = c.newValue;
+      });
+      var newState = {
+        updatedAt: new Date().toLocaleDateString("pt-BR"),
+        rows: mergedRows
+      };
+      return fetch("/api/data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newState)
+      }).then(function (r) {
+        if (!r.ok) throw new Error("http_" + r.status);
+        return r.json();
+      }).then(function () {
+        DATA = newState;
+        editing = false;
+        btnEdit.textContent = "Editar página";
+        btnCancel.style.display = "none";
+        render();
+        setStatus("Salvo ✅ — alteração registrada no histórico e visível para todos.", true);
+      });
     });
   }
 
@@ -968,7 +982,6 @@
     confirmOverlay.style.display = "none";
     confirmOverlay.innerHTML = "";
     pendingChanges = [];
-    pendingNewRows = null;
   }
 
   function wireConfirmModalEvents() {
