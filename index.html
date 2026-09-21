@@ -52,9 +52,16 @@
     --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
     --sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
+    /* Largura do conteúdo: mais larga a partir de --bp-wide (telas de
+       desktop) para acomodar o comparativo em colunas lado a lado. */
+    --content-max: 800px;
+
     box-sizing: border-box;
     padding-top: env(safe-area-inset-top, 0px);
     padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  @media (min-width: 960px) {
+    :root { --content-max: 1180px; }
   }
   html { scroll-padding-top: 78px; }
 
@@ -72,7 +79,7 @@
   /* ---------- HERO ---------- */
   .hero {
     padding: 40px 20px 28px;
-    max-width: 800px;
+    max-width: var(--content-max);
     margin: 0 auto;
     background: var(--paper);
   }
@@ -148,8 +155,23 @@
     padding-top: calc(10px + env(safe-area-inset-top, 0px));
     box-shadow: 0 2px 8px rgba(0, 31, 92, 0.2);
   }
+  /* Dica visual de que a lista de grupos rola horizontalmente em telas
+     estreitas — desativada a partir de 960px, onde tudo costuma caber. */
+  .nav::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 3px;
+    width: 32px;
+    background: linear-gradient(to right, transparent, var(--blue-700) 75%);
+    pointer-events: none;
+  }
+  @media (min-width: 960px) {
+    .nav::after { display: none; }
+  }
   .nav__row {
-    max-width: 800px;
+    max-width: var(--content-max);
     margin: 0 auto;
     padding: 0 20px;
     display: flex;
@@ -166,15 +188,18 @@
     color: #FFFFFF;
     background: rgba(255, 255, 255, 0.12);
     border: 1px solid rgba(255, 255, 255, 0.28);
-    padding: 7px 13px;
+    padding: 10px 14px;
     border-radius: 4px;
     white-space: nowrap;
+    min-height: 24px;
+    display: inline-flex;
+    align-items: center;
   }
   .nav a:hover { border-color: var(--orange-text); background: var(--orange-text); color: #fff; }
 
   /* ---------- MAIN ---------- */
   main {
-    max-width: 800px;
+    max-width: var(--content-max);
     margin: 0 auto;
     padding: 28px 20px 20px;
   }
@@ -281,7 +306,7 @@
 
   /* ---------- RESUMO VISUAL: 3ª PROPOSTA vs. HOJE E vs. REIVINDICAÇÃO ---------- */
   .summarySection {
-    max-width: 800px;
+    max-width: var(--content-max);
     margin: 0 auto 8px;
     padding: 0 20px;
   }
@@ -335,7 +360,7 @@
     flex: 1 1 auto;
     font-size: 13px;
     font-weight: 600;
-    padding: 8px 12px;
+    padding: 12px;
     border-radius: 999px;
     border: 1px solid var(--line);
     background: var(--paper-card);
@@ -363,7 +388,7 @@
 
   /* ---------- SUGESTÕES ---------- */
   .suggestSection {
-    max-width: 800px;
+    max-width: var(--content-max);
     margin: 0 auto 8px;
     padding: 0 20px;
   }
@@ -436,7 +461,7 @@
 
   /* ---------- HISTÓRICO DE ALTERAÇÕES ---------- */
   .changelogSection {
-    max-width: 800px;
+    max-width: var(--content-max);
     margin: 0 auto 8px;
     padding: 0 20px;
   }
@@ -556,7 +581,7 @@
 
   /* ---------- FOOTER / BAR ---------- */
   footer {
-    max-width: 800px;
+    max-width: var(--content-max);
     margin: 8px auto 0;
     padding: 0 20px 30px;
     font-size: 12.5px;
@@ -580,7 +605,7 @@
     box-shadow: 0 -2px 8px rgba(0, 31, 92, 0.2);
   }
   .bar__inner {
-    max-width: 800px;
+    max-width: var(--content-max);
     width: 100%;
     display: flex;
     align-items: center;
@@ -607,6 +632,43 @@
 
   @media (max-width: 420px) {
     .field { grid-template-columns: 1fr; gap: 3px; }
+  }
+
+  /* Em telas bem estreitas o texto de status some sob o botão quando os dois
+     dividem a mesma linha — empilha em vez de apertar. */
+  @media (max-width: 480px) {
+    .bar__inner { flex-direction: column; align-items: stretch; gap: 8px; }
+    .bar__inner > div { justify-content: center; }
+    .status { text-align: center; }
+  }
+
+  /* ---------- DESKTOP: comparativo em colunas lado a lado ---------- */
+  /* A partir daqui há espaço de sobra para mostrar as 5 colunas (hoje, três
+     propostas e reivindicação) lado a lado em vez de empilhadas — vira uma
+     tabela de comparação de verdade, sem precisar rolar a página inteira
+     para comparar um tema. */
+  @media (min-width: 960px) {
+    .card dl { display: flex; }
+    .field {
+      grid-template-columns: none;
+      grid-template-rows: auto 1fr;
+      flex: 1 1 0;
+      min-width: 0;
+      gap: 6px;
+      padding: 14px 14px;
+      border-left-width: 0;
+      border-top: 3px solid transparent;
+      border-bottom: none;
+      border-right: 1px solid var(--line);
+    }
+    .field:last-child { border-right: none; }
+    .field--hoje { border-top-color: var(--c-hoje); }
+    .field--p1   { border-top-color: var(--c-p1); }
+    .field--p2   { border-top-color: var(--c-p2); }
+    .field--p3   { border-top-color: var(--c-p3); }
+    .field--reiv { border-top-color: var(--c-reiv); }
+    .field.pending { border-top-color: var(--pending-line); }
+    .field dt { padding-top: 0; }
   }
 </style>
 </head>
