@@ -1,4 +1,4 @@
-const { put, list } = require('@vercel/blob');
+const { put, get, BlobPreconditionFailedError } = require('@vercel/blob');
 const { readBody } = require('../lib/body');
 const crypto = require('crypto');
 
@@ -6,26 +6,24 @@ const PATHNAME = 'comparativo-votes.json';
 const CHOICES = ['aceitavel', 'insuficiente'];
 const COOKIE_NAME = 'voter_id';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365 * 2; // 2 anos
+const MAX_WRITE_ATTEMPTS = 5;
 
 async function readCurrent() {
   try {
-    // Não retorna cedo se BLOB_READ_WRITE_TOKEN estiver ausente: quando o Blob
-    // Store é conectado ao projeto (em vez de configurado via token manual), a
-    // autenticação é feita via OIDC e essa variável nunca existe — list()/put()
-    // resolvem sozinhos nesse caso. Um curto-circuito aqui faria toda leitura
-    // voltar vazia mesmo com dados gravados de verdade no Blob.
-    const { blobs } = await list({ prefix: PATHNAME, token: process.env.BLOB_READ_WRITE_TOKEN, limit: 1 });
-    if (!blobs || !blobs.length) return null;
-    // cache: 'no-store' evita cache local, mas o Blob por padrão também serve
-    // o conteúdo antigo por um bom tempo via CDN (cacheControlMaxAge default
-    // é de dias) — por isso o put() abaixo grava com cacheControlMaxAge: 0,
-    // senão um voto seguinte lê essa URL ainda desatualizada e sobrescreve o
-    // voto anterior ao salvar (era a causa dos votos "sumirem").
-    const r = await fetch(blobs[0].url, { cache: 'no-store' });
-    if (!r.ok) return null;
-    return await r.json();
+    // useCache: false ignora o cache de CDN do Blob (que por padrão serve o
+    // conteúdo antigo por hora/dias) e lê direto da origem — sem isso, um
+    // voto seguinte podia ler uma versão desatualizada e, ao gravar de volta,
+    // apagar o voto anterior (era a causa dos votos "sumirem").
+    const result = await get(PATHNAME, {
+      access: 'public',
+      useCache: false,
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+    });
+    if (!result || !result.stream) return { data: null, etag: null };
+    const text = await new Response(result.stream).text();
+    return { data: JSON.parse(text), etag: result.blob.etag };
   } catch (e) {
-    return null;
+    return { data: null, etag: null };
   }
 }
 
@@ -37,10 +35,10 @@ function getVoterId(req) {
 }
 
 function setVoterCookie(res, voterId) {
-  const isProd = process.env.VERCEL_ENV === 'production' || process.env.VERCEL_ENV === 'preview';
+  const isSecureContext = process.env.VERCEL_ENV === 'production' || process.env.VERCEL_ENV === 'preview';
   res.setHeader('Set-Cookie',
     COOKIE_NAME + '=' + encodeURIComponent(voterId) +
-    '; Path=/; Max-Age=' + COOKIE_MAX_AGE + '; HttpOnly; SameSite=Lax' + (isProd ? '; Secure' : ''));
+    '; Path=/; Max-Age=' + COOKIE_MAX_AGE + '; HttpOnly; SameSite=Lax' + (isSecureContext ? '; Secure' : ''));
 }
 
 function tallyAll(voters) {
@@ -72,8 +70,8 @@ module.exports = async (req, res) => {
   }
 
   if (req.method === 'GET') {
-    const data = await readCurrent();
-    const voters = (data && data.voters && typeof data.voters === 'object') ? data.voters : {};
+    const current = await readCurrent();
+    const voters = (current.data && current.data.voters && typeof current.data.voters === 'object') ? current.data.voters : {};
     res.status(200).json({ votes: tallyAll(voters), myVotes: voters[voterId] || {} });
     return;
   }
@@ -93,22 +91,44 @@ module.exports = async (req, res) => {
         return;
       }
 
-      const current = (await readCurrent()) || { voters: {} };
-      const voters = (current.voters && typeof current.voters === 'object') ? current.voters : {};
-      const mine = (voters[voterId] && typeof voters[voterId] === 'object') ? Object.assign({}, voters[voterId]) : {};
-      mine[rowId] = choice;
-      voters[voterId] = mine;
+      // Escrita condicional (ifMatch/ETag) com retry: se outro voto concorrente
+      // gravar entre a nossa leitura e a nossa escrita, o Blob rejeita com
+      // BlobPreconditionFailedError e a gente relê o estado mais recente antes
+      // de tentar de novo — sem isso, dois votos quase simultâneos podiam se
+      // sobrescrever (o segundo apagava o primeiro).
+      let outcome = null;
+      for (let attempt = 0; attempt < MAX_WRITE_ATTEMPTS; attempt++) {
+        const current = await readCurrent();
+        const voters = (current.data && current.data.voters && typeof current.data.voters === 'object') ? current.data.voters : {};
+        const mine = (voters[voterId] && typeof voters[voterId] === 'object') ? Object.assign({}, voters[voterId]) : {};
+        mine[rowId] = choice;
+        const nextVoters = Object.assign({}, voters);
+        nextVoters[voterId] = mine;
 
-      await put(PATHNAME, JSON.stringify({ voters: voters }), {
-        access: 'public',
-        addRandomSuffix: false,
-        allowOverwrite: true,
-        contentType: 'application/json',
-        cacheControlMaxAge: 0,
-        token: process.env.BLOB_READ_WRITE_TOKEN,
-      });
+        const putOptions = {
+          access: 'public',
+          addRandomSuffix: false,
+          contentType: 'application/json',
+          token: process.env.BLOB_READ_WRITE_TOKEN,
+        };
+        if (current.etag) {
+          putOptions.ifMatch = current.etag;
+        } else {
+          putOptions.allowOverwrite = true;
+        }
 
-      res.status(200).json({ ok: true, votes: tallyAll(voters), myVotes: mine });
+        try {
+          await put(PATHNAME, JSON.stringify({ voters: nextVoters }), putOptions);
+          outcome = { votes: tallyAll(nextVoters), myVotes: mine };
+          break;
+        } catch (writeErr) {
+          const isConflict = writeErr instanceof BlobPreconditionFailedError;
+          if (isConflict && attempt < MAX_WRITE_ATTEMPTS - 1) continue;
+          throw writeErr;
+        }
+      }
+
+      res.status(200).json({ ok: true, votes: outcome.votes, myVotes: outcome.myVotes });
     } catch (e) {
       res.status(500).json({ ok: false, error: String(e && e.message || e) });
     }

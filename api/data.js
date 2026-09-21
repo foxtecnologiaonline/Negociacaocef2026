@@ -1,20 +1,24 @@
-const { put, list } = require('@vercel/blob');
+const { put, get } = require('@vercel/blob');
 const { readBody } = require('../lib/body');
 
 const PATHNAME = 'comparativo-data.json';
 
 async function readCurrent() {
   try {
-    // Não retorna cedo se BLOB_READ_WRITE_TOKEN estiver ausente: quando o Blob
-    // Store é conectado ao projeto (em vez de configurado via token manual), a
-    // autenticação é feita via OIDC e essa variável nunca existe — list()/put()
-    // resolvem sozinhos nesse caso. Um curto-circuito aqui faria toda leitura
-    // voltar vazia mesmo com dados gravados de verdade no Blob.
-    const { blobs } = await list({ prefix: PATHNAME, token: process.env.BLOB_READ_WRITE_TOKEN, limit: 1 });
-    if (!blobs || !blobs.length) return null;
-    const r = await fetch(blobs[0].url, { cache: 'no-store' });
-    if (!r.ok) return null;
-    return await r.json();
+    // useCache: false ignora o cache de CDN do Blob (que por padrão serve o
+    // conteúdo antigo por até um mês) e lê direto da origem — essencial aqui
+    // porque finishSave() (no index.html) lê o estado atual antes de mesclar
+    // e gravar uma edição concorrente; sem isso, ele podia enxergar uma
+    // versão desatualizada. Não precisa de token/OIDC explícito: quando o
+    // Blob Store está conectado ao projeto, get() resolve a autenticação
+    // sozinho a partir do pathname.
+    const result = await get(PATHNAME, {
+      access: 'public',
+      useCache: false,
+      token: process.env.BLOB_READ_WRITE_TOKEN,
+    });
+    if (!result || !result.stream) return null;
+    return JSON.parse(await new Response(result.stream).text());
   } catch (e) {
     return null;
   }
@@ -49,7 +53,6 @@ module.exports = async (req, res) => {
         addRandomSuffix: false,
         allowOverwrite: true,
         contentType: 'application/json',
-        cacheControlMaxAge: 0,
         token: process.env.BLOB_READ_WRITE_TOKEN,
       });
 
