@@ -129,13 +129,27 @@ module.exports = async (req, res) => {
       // sobrescrever (o segundo apagava o primeiro).
       let outcome = null;
       for (let attempt = 0; attempt < MAX_WRITE_ATTEMPTS; attempt++) {
+        // Pequeno atraso com jitter antes de tentar de novo: sem isso, votos
+        // concorrentes que colidiram tendem a colidir de novo imediatamente
+        // (todos leem e escrevem no mesmo instante), esgotando as tentativas
+        // à toa sob pico real de acessos em vez de se resolver no retry.
+        if (attempt > 0) {
+          await new Promise(function (resolve) { setTimeout(resolve, 20 * attempt + Math.floor(Math.random() * 30)); });
+        }
+
         const current = await readCurrent();
+        // voters vem de um JSON.parse() (ou de Object.create(null) no fallback)
+        // exclusivo desta chamada — não é reaproveitado em outro lugar, então
+        // dá para mutar direto em vez de clonar o mapa inteiro a cada
+        // tentativa. Isso é seguro mesmo com prototype normal porque voterId
+        // já passou pela validação de formato UUID (nunca é "__proto__"); só
+        // "mine", indexado por rowId (livre, sem validação de formato), é que
+        // precisa ser Object.create(null).
         const voters = (current.data && current.data.voters && typeof current.data.voters === 'object') ? current.data.voters : Object.create(null);
         const existingMine = voters[voterId];
         const mine = Object.assign(Object.create(null), (existingMine && typeof existingMine === 'object') ? existingMine : null);
         mine[rowId] = choice;
-        const nextVoters = Object.assign(Object.create(null), voters);
-        nextVoters[voterId] = mine;
+        voters[voterId] = mine;
 
         const putOptions = {
           access: 'public',
@@ -150,8 +164,8 @@ module.exports = async (req, res) => {
         }
 
         try {
-          await put(PATHNAME, JSON.stringify({ voters: nextVoters }), putOptions);
-          outcome = { votes: tallyAll(nextVoters), myVotes: mine };
+          await put(PATHNAME, JSON.stringify({ voters: voters }), putOptions);
+          outcome = { votes: tallyAll(voters), myVotes: mine };
           break;
         } catch (writeErr) {
           const isConflict = writeErr instanceof BlobPreconditionFailedError;
