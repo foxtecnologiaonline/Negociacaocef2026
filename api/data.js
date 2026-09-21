@@ -5,9 +5,12 @@ const PATHNAME = 'comparativo-data.json';
 
 async function readCurrent() {
   try {
-    const token = process.env.BLOB_READ_WRITE_TOKEN;
-    if (!token) return null;
-    const { blobs } = await list({ prefix: PATHNAME, token, limit: 1 });
+    // Não retorna cedo se BLOB_READ_WRITE_TOKEN estiver ausente: quando o Blob
+    // Store é conectado ao projeto (em vez de configurado via token manual), a
+    // autenticação é feita via OIDC e essa variável nunca existe — list()/put()
+    // resolvem sozinhos nesse caso. Um curto-circuito aqui faria toda leitura
+    // voltar vazia mesmo com dados gravados de verdade no Blob.
+    const { blobs } = await list({ prefix: PATHNAME, token: process.env.BLOB_READ_WRITE_TOKEN, limit: 1 });
     if (!blobs || !blobs.length) return null;
     const r = await fetch(blobs[0].url, { cache: 'no-store' });
     if (!r.ok) return null;
