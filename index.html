@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Comparativo da Negociação CAIXA 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0B2E6B;
+    --ink-soft: #4A5D82;
+    --paper: #EEF2F8;
+    --paper-card: #FFFFFF;
+    --line: #D3DCEA;
+    --orange: #E4671B;
+    --orange-soft: #FBE3D0;
+    --orange-line: #C6551A;
+    --pending: #E8B923;
+    --pending-soft: #FBF0CE;
+    --pending-line: #B5860F;
+
+    --c-hoje: #5B6B85;      --c-hoje-bg: #E7EAF1;
+    --c-p1:   #2E74B5;      --c-p1-bg:   #DCEAF7;
+    --c-p2:   #1B4F91;      --c-p2-bg:   #D2E0F1;
+    --c-p3:   #0B2E6B;      --c-p3-bg:   #D9E2F0;
+    --c-reiv: #E4671B;      --c-reiv-bg: #FBE3D0;
+
+    --radius: 4px;
+    --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
+    --sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  html { scroll-padding-top: 78px; }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ink: #DCE6F7; --ink-soft: #9FB1D1;
+      --paper: #0B1220; --paper-card: #121B2E; --line: #253352;
+      --orange: #F0813A; --orange-soft: #3A2412; --orange-line: #C6551A;
+      --pending: #F0C64C; --pending-soft: #362B0C; --pending-line: #B5860F;
+      --c-hoje-bg: #1A2436; --c-p1-bg: #16273D; --c-p2-bg: #142543;
+      --c-p3-bg: #17224A; --c-reiv-bg: #3A2412;
+      --c-p1: #5C9BD8; --c-p2: #6D9BDB; --c-p3: #8CA9E0; --c-reiv: #F0813A;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ink: #DCE6F7; --ink-soft: #9FB1D1;
+    --paper: #0B1220; --paper-card: #121B2E; --line: #253352;
+    --orange: #F0813A; --orange-soft: #3A2412; --orange-line: #C6551A;
+    --pending: #F0C64C; --pending-soft: #362B0C; --pending-line: #B5860F;
+    --c-hoje-bg: #1A2436; --c-p1-bg: #16273D; --c-p2-bg: #142543;
+    --c-p3-bg: #17224A; --c-reiv-bg: #3A2412;
+    --c-p1: #5C9BD8; --c-p2: #6D9BDB; --c-p3: #8CA9E0; --c-reiv: #F0813A;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    padding: 44px 20px 28px;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  .hero__kicker {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--orange-line);
+    margin: 0 0 10px;
+  }
+  .hero h1 {
+    font-family: var(--serif);
+    font-weight: 700;
+    font-size: clamp(28px, 6vw, 42px);
+    line-height: 1.12;
+    margin: 0 0 16px;
+    letter-spacing: -0.01em;
+    position: relative;
+    padding-bottom: 16px;
+  }
+  .hero h1::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 56px;
+    height: 4px;
+    background: var(--orange);
+    border-radius: 2px;
+  }
+  .hero p {
+    font-size: 16px;
+    color: var(--ink-soft);
+    max-width: 56ch;
+    margin: 0 0 22px;
+  }
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .stat {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 10px 14px;
+    min-width: 128px;
+  }
+  .stat b {
+    display: block;
+    font-family: var(--serif);
+    font-size: 22px;
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+  .stat span { font-size: 12.5px; color: var(--ink-soft); }
+  .stat.pending b { color: var(--pending-line); }
+  .stat { border-top: 3px solid var(--c-hoje); }
+  .stat:nth-child(2) { border-top-color: var(--pending-line); }
+  .stat:nth-child(3) { border-top-color: var(--orange); }
+
+  /* ---------- NAV ---------- */
+  .nav {
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    background: var(--ink);
+    padding: 10px 0;
+    padding-top: calc(10px + env(safe-area-inset-top, 0px));
+  }
+  .nav__row {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .nav__row::-webkit-scrollbar { display: none; }
+  .nav a {
+    flex: none;
+    text-decoration: none;
+    font-size: 13.5px;
+    font-weight: 500;
+    color: #EAF0FB;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    padding: 7px 13px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+  .nav a:hover { border-color: var(--orange); color: #fff; }
+
+  /* ---------- MAIN ---------- */
+  main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 28px 20px 20px;
+  }
+  .group-title {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 22px;
+    margin: 40px 0 16px;
+    padding-top: 6px;
+  }
+  .group-title:first-child { margin-top: 6px; }
+
+  .card {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .card h3 {
+    font-family: var(--serif);
+    font-weight: 600;
+    font-size: 18px;
+    margin: 0;
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .field {
+    display: grid;
+    grid-template-columns: 118px 1fr;
+    gap: 12px;
+    padding: 11px 16px;
+    border-left: 4px solid transparent;
+    border-bottom: 1px solid var(--line);
+  }
+  .field:last-child { border-bottom: none; }
+  .field dt {
+    font-size: 11.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    color: var(--ink-soft);
+    padding-top: 2px;
+  }
+  .field dd {
+    margin: 0;
+    font-size: 14.5px;
+    white-space: pre-line;
+    outline: none;
+  }
+  .field--hoje { border-left-color: var(--c-hoje); background: var(--c-hoje-bg); }
+  .field--p1   { border-left-color: var(--c-p1);   background: var(--c-p1-bg); }
+  .field--p2   { border-left-color: var(--c-p2);   background: var(--c-p2-bg); }
+  .field--p3   { border-left-color: var(--c-p3);   background: var(--c-p3-bg); }
+  .field--reiv { border-left-color: var(--c-reiv); background: var(--c-reiv-bg); }
+
+  .field.pending {
+    border-left-color: var(--pending-line);
+    background: var(--pending-soft);
+  }
+  .field.pending dd {
+    color: var(--ink-soft);
+    font-style: italic;
+  }
+  .field.pending dd:empty::before {
+    content: "Sem informação — toque para preencher";
+  }
+  body.editing .field dd {
+    cursor: text;
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px transparent;
+  }
+  body.editing .field dd:hover { box-shadow: 0 0 0 1px var(--ink-soft); }
+  body.editing .field dd:focus { box-shadow: 0 0 0 2px var(--ink); background: color-mix(in srgb, var(--paper-card) 60%, white); }
+
+  /* ---------- LEGEND ---------- */
+  .legend {
+    margin-top: 36px;
+    padding: 16px;
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-size: 13.5px;
+  }
+  .legend h4 {
+    font-family: var(--serif);
+    margin: 0 0 10px;
+    font-size: 15px;
+  }
+  .legend ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .legend li { display: flex; align-items: center; gap: 8px; }
+  .swatch { width: 12px; height: 12px; border-radius: 2px; flex: none; }
+  .legend .sources {
+    margin-top: 14px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    color: var(--ink-soft);
+    font-size: 12.5px;
+    line-height: 1.6;
+  }
+
+  /* ---------- FOOTER / BAR ---------- */
+  footer {
+    max-width: 760px;
+    margin: 8px auto 0;
+    padding: 0 20px 30px;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  footer a { text-decoration: underline; }
+
+  .bar {
+    position: sticky;
+    bottom: 0;
+    z-index: 6;
+    display: flex;
+    justify-content: center;
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+    background: var(--ink);
+    border-top: 1px solid var(--orange-line);
+  }
+  .bar__inner {
+    max-width: 760px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+  }
+  button {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 14px;
+    border-radius: 999px;
+    border: 1px solid var(--orange);
+    background: var(--orange);
+    color: #fff;
+    padding: 10px 18px;
+    cursor: pointer;
+  }
+  button:hover { background: var(--orange-line); border-color: var(--orange-line); }
+  button.ghost { background: transparent; color: #EAF0FB; border-color: rgba(255,255,255,0.35); }
+  button.ghost:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.35); }
+  button:disabled { opacity: 0.45; cursor: not-allowed; }
+  .status { font-size: 12.5px; color: #C7D3E8; }
+  .status.ok { color: #8FD4A8; font-weight: 600; }
+
+  @media (max-width: 420px) {
+    .field { grid-template-columns: 1fr; gap: 3px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav__row" id="navRow"></div>
+</nav>
+
+<div class="hero">
+  <p class="hero__kicker">Negociação Coletiva CAIXA · Data-Base 2026</p>
+  <h1>O que a Caixa já disse — e o que ainda falta dizer.</h1>
+  <p>Comparativo tema a tema entre o acordo vigente, as três propostas apresentadas pela Caixa e a pauta de reivindicações dos empregados.</p>
+  <div class="stats">
+    <div class="stat"><b id="statTemas">–</b><span>temas mapeados</span></div>
+    <div class="stat pending"><b id="statPend">–</b><span>lacunas sem resposta da Caixa</span></div>
+    <div class="stat"><b id="statAt">–</b><span>última atualização</span></div>
+  </div>
+</div>
+
+<main id="main"></main>
+
+<div class="bar">
+  <div class="bar__inner">
+    <span class="status" id="status">Modo leitura</span>
+    <div style="display:flex; gap:8px;">
+      <button class="ghost" id="btnCancel" style="display:none;">Cancelar</button>
+      <button id="btnEdit">Editar página</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------------- DATA ----------------
+  // Cada linha: id, tema, grupo, e os 5 campos (texto vazio = pendente)
+  var SEED = {
+    updatedAt: "20/09/2026",
+    rows: [
+      { id:"reajuste", grupo:"Dinheiro no bolso", tema:"Reajuste salarial",
+        hoje:"4,64% (2024)\nINPC + 0,6% (2025)",
+        p1:"",
+        p2:"\"Salário reajustado\" (percentual não informado)",
+        p3:"INPC + 0,6%",
+        reiv:"Não especificado nesta minuta (tema tratado na mesa CCT Fenaban)" },
+
+      { id:"premio", grupo:"Dinheiro no bolso", tema:"Prêmio extraordinário (IEO)",
+        hoje:"Não previsto",
+        p1:"",
+        p2:"R$ 3.000 por empregado",
+        p3:"R$ 3.000 por empregado (mantido)",
+        reiv:"" },
+
+      { id:"supercaixa", grupo:"Dinheiro no bolso", tema:"Super Caixa",
+        hoje:"Regulamento próprio (fora do ACT)",
+        p1:"",
+        p2:"",
+        p3:"Dobro de premiação na habilitação inicial (50%) + regras simplificadas",
+        reiv:"Modelo \"vendeu, recebeu\": pagamento integral de comissões e premiações; veda redução por metas ou indicadores de satisfação" },
+
+      { id:"plr", grupo:"Dinheiro no bolso", tema:"PLR 2026/2027",
+        hoje:"Regras de 2024/2025",
+        p1:"",
+        p2:"",
+        p3:"Mantém regras e cálculo de 2024/2025",
+        reiv:"PLR Social adicional: 6% do lucro líquido, linear, sem teto; elimina limitador de 3 salários" },
+
+      { id:"merito", grupo:"Dinheiro no bolso", tema:"Promoção por mérito",
+        hoje:"Anual, ano-base anterior, pago em janeiro",
+        p1:"",
+        p2:"",
+        p3:"Critérios de autocuidado + resultado; retira metas coletivas",
+        reiv:"Mantém sistemática atual (anual, ano-base anterior, pago em janeiro)" },
+
+      { id:"contribuicao", grupo:"Saúde Caixa", tema:"Contribuição da CAIXA",
+        hoje:"Até 6,5% da folha",
+        p1:"Aumento da participação dos beneficiários (percentual não detalhado)",
+        p2:"Sobe para 8% (a partir de 2027)",
+        p3:"Sobe para 9% (a partir de 2027)",
+        reiv:"Fim do teto; proporção 70% Caixa / 30% empregado" },
+
+      { id:"idade", grupo:"Saúde Caixa", tema:"Cobrança por faixa etária",
+        hoje:"Sem cobrança diferenciada",
+        p1:"Previa cobrança por faixa etária",
+        p2:"Nova tabela, ainda por faixa etária (percentuais reduzidos)",
+        p3:"Retira cobrança por faixa etária",
+        reiv:"Mantém modelo solidário (pacto intergeracional)" },
+
+      { id:"jornada", grupo:"Rotina & direitos", tema:"Jornada de trabalho",
+        hoje:"6h/dia (30h/semana); 8h com função gratificada",
+        p1:"",
+        p2:"",
+        p3:"Sem alteração",
+        reiv:"5h/dia, 4 dias por semana (20h semanais)" },
+
+      { id:"indenizacao", grupo:"Rotina & direitos", tema:"Indenização assalto/sinistro",
+        hoje:"R$ 266.020,28",
+        p1:"",
+        p2:"",
+        p3:"Sem alteração",
+        reiv:"R$ 1.000.000,00" },
+
+      { id:"maternidade", grupo:"Rotina & direitos", tema:"Licença maternidade",
+        hoje:"180 dias (incl. 30 de aleitamento)",
+        p1:"",
+        p2:"",
+        p3:"Sem alteração",
+        reiv:"180 dias + aleitamento até os 2 anos" },
+
+      { id:"remoto", grupo:"Rotina & direitos", tema:"Atendimento remoto Fígital/Genesys",
+        hoje:"Regras vigentes",
+        p1:"",
+        p2:"",
+        p3:"Prazo de início ajustado de 5 para 10 min (até 12/2026)",
+        reiv:"" },
+
+      { id:"transporte", grupo:"Rotina & direitos", tema:"Vale-transporte",
+        hoje:"Empregado paga o que exceder 4% do salário",
+        p1:"",
+        p2:"",
+        p3:"Sem alteração",
+        reiv:"Custeio 100% Caixa, sem custo ao empregado" },
+    ]
+  };
+
+  var COLS = [
+    { key:"hoje", label:"Como está hoje", cls:"field--hoje" },
+    { key:"p1",   label:"1ª Proposta",     cls:"field--p1" },
+    { key:"p2",   label:"2ª Proposta",     cls:"field--p2" },
+    { key:"p3",   label:"3ª Proposta / Final", cls:"field--p3" },
+    { key:"reiv", label:"Reivindicação",   cls:"field--reiv" },
+  ];
+
+  // ---------------- STATE ----------------
+  var DATA = SEED;
+  var editing = false;
+
+  function countPending(rows) {
+    var n = 0;
+    rows.forEach(function (r) {
+      ["p1", "p2"].forEach(function (k) { if (!r[k] || !r[k].trim()) n++; });
+    });
+    return n;
+  }
+
+  function groupRows(rows) {
+    var order = [], map = {};
+    rows.forEach(function (r) {
+      if (!map[r.grupo]) { map[r.grupo] = []; order.push(r.grupo); }
+      map[r.grupo].push(r);
+    });
+    return order.map(function (g) { return { grupo: g, items: map[g] }; });
+  }
+
+  function escapeHtml(s) {
+    return (s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+
+  // ---------------- RENDER ----------------
+  function render() {
+    var groups = groupRows(DATA.rows);
+
+    document.getElementById("statTemas").textContent = DATA.rows.length;
+    document.getElementById("statPend").textContent = countPending(DATA.rows);
+    document.getElementById("statAt").textContent = DATA.updatedAt;
+
+    var nav = document.getElementById("navRow");
+    nav.innerHTML = groups.map(function (g) {
+      return '<a href="#g-' + slug(g.grupo) + '">' + escapeHtml(g.grupo) + '</a>';
+    }).join("");
+
+    var main = document.getElementById("main");
+    main.innerHTML = groups.map(function (g) {
+      var cards = g.items.map(cardHtml).join("");
+      return '<h2 class="group-title" id="g-' + slug(g.grupo) + '">' + escapeHtml(g.grupo) + '</h2>' + cards;
+    }).join("") + legendHtml();
+
+    document.body.classList.toggle("editing", editing);
+    bindEditableHandlers();
+  }
+
+  function slug(s) {
+    return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-");
+  }
+
+  function cardHtml(row) {
+    var fields = COLS.map(function (c) {
+      var val = row[c.key] || "";
+      var pending = !val.trim();
+      return '<div class="field ' + c.cls + (pending ? " pending" : "") + '" data-row="' + row.id + '" data-col="' + c.key + '">' +
+        '<dt>' + c.label + '</dt>' +
+        '<dd contenteditable="false">' + escapeHtml(val) + '</dd>' +
+      '</div>';
+    }).join("");
+    return '<article class="card"><h3>' + escapeHtml(row.tema) + '</h3><dl style="margin:0;">' + fields + '</dl></article>';
+  }
+
+  function legendHtml() {
+    return '<div class="legend">' +
+      '<h4>Como ler</h4>' +
+      '<ul>' +
+      '<li><span class="swatch" style="background:var(--c-hoje)"></span> Como está hoje — Acordo vigente (ACT 2024–2026)</li>' +
+      '<li><span class="swatch" style="background:var(--c-p1)"></span> 1ª Proposta da Caixa</li>' +
+      '<li><span class="swatch" style="background:var(--c-p2)"></span> 2ª Proposta da Caixa (10/09)</li>' +
+      '<li><span class="swatch" style="background:var(--c-p3)"></span> 3ª Proposta / Final da Caixa (17/09)</li>' +
+      '<li><span class="swatch" style="background:var(--c-reiv)"></span> Reivindicações dos Empregados (Minuta 2026–2028)</li>' +
+      '<li><span class="swatch" style="background:var(--pending-line)"></span> Sem informação confirmada — pendente</li>' +
+      '</ul>' +
+      '<div class="sources">Fontes: ACT Geral CAIXA/CONTRAF 2024–2026 · Propostas 1ª (imagem-resumo), 2ª e 3ª/Final (Anexo I) · Minuta da Pauta de Reivindicações 2026–2028 · Comparativo do Sindicato dos Bancários. Revisado linha a linha contra os documentos originais.</div>' +
+    '</div>';
+  }
+
+  function bindEditableHandlers() {
+    document.querySelectorAll(".field dd").forEach(function (dd) {
+      dd.setAttribute("contenteditable", editing ? "true" : "false");
+    });
+  }
+
+  // ---------------- EDIT / SAVE ----------------
+  var btnEdit = document.getElementById("btnEdit");
+  var btnCancel = document.getElementById("btnCancel");
+  var statusEl = document.getElementById("status");
+  function setStatus(text, ok) {
+    statusEl.textContent = text;
+    statusEl.classList.toggle("ok", !!ok);
+  }
+
+  function collectFromDom() {
+    var rows = DATA.rows.map(function (r) { return Object.assign({}, r); });
+    document.querySelectorAll(".field").forEach(function (f) {
+      var id = f.getAttribute("data-row");
+      var col = f.getAttribute("data-col");
+      var row = rows.find(function (r) { return r.id === id; });
+      if (row) row[col] = f.querySelector("dd").innerText.trim();
+    });
+    return rows;
+  }
+
+  btnEdit.addEventListener("click", function () {
+    if (!editing) {
+      editing = true;
+      document.body.classList.add("editing");
+      bindEditableHandlers();
+      btnEdit.textContent = "Salvar alterações";
+      btnCancel.style.display = "inline-block";
+      setStatus("Editando — toque em qualquer campo colorido.");
+    } else {
+      save();
+    }
+  });
+
+  btnCancel.addEventListener("click", function () {
+    editing = false;
+    btnEdit.textContent = "Editar página";
+    btnCancel.style.display = "none";
+    load();
+  });
+
+  function save() {
+    var newRows = collectFromDom();
+    var newState = {
+      updatedAt: new Date().toLocaleDateString("pt-BR"),
+      rows: newRows
+    };
+    setStatus("Salvando…");
+    btnEdit.disabled = true;
+
+    fetch("/api/data", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(newState)
+    }).then(function (r) {
+      if (!r.ok) throw new Error("http_" + r.status);
+      return r.json();
+    }).then(function () {
+      DATA = newState;
+      btnEdit.disabled = false;
+      editing = false;
+      btnEdit.textContent = "Editar página";
+      btnCancel.style.display = "none";
+      render();
+      setStatus("Salvo ✅ — todos que abrirem a página verão esta versão.", true);
+    }).catch(function () {
+      btnEdit.disabled = false;
+      setStatus("Não deu para salvar agora. Tente de novo em instantes.");
+    });
+  }
+
+  function load() {
+    setStatus("Carregando…");
+    fetch("/api/data", { cache: "no-store" }).then(function (r) {
+      if (!r.ok) throw new Error("http_" + r.status);
+      return r.json();
+    }).then(function (data) {
+      DATA = (data && data.rows && data.rows.length) ? data : SEED;
+      render();
+      setStatus("Modo leitura — toque em \"Editar página\" para colaborar.");
+    }).catch(function () {
+      DATA = SEED;
+      render();
+      setStatus("Não deu para carregar as últimas alterações — mostrando a versão inicial.");
+    });
+  }
+
+  // ---------------- INIT ----------------
+  render();
+  load();
+})();
+</script>
+</body>
+</html>
