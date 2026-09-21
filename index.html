@@ -277,7 +277,7 @@
   .deltaCaption { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-soft); margin: 6px 0 3px; }
   .deltaCaption:first-child { margin-top: 0; }
 
-  /* ---------- RESUMO VISUAL: 3ª PROPOSTA vs. HOJE E vs. REIVINDICAÇÃO ---------- */
+  /* ---------- PRINCIPAIS PONTOS DISCUTIDOS DA NEGOCIAÇÃO ---------- */
   .summarySection {
     max-width: var(--content-max);
     margin: 0 auto 8px;
@@ -292,32 +292,33 @@
   }
   .summarySection h2 { font-family: var(--serif); font-size: 17px; margin: 0 0 4px; color: var(--blue-800); }
   .summarySection__card > p { margin: 0 0 14px; font-size: 13px; color: var(--ink-soft); }
-  .summaryGroup { margin-top: 16px; }
-  .summaryGroup:first-child { margin-top: 0; }
-  .summaryGroup h3 {
-    font-family: var(--serif);
-    font-size: 13px;
-    font-weight: 600;
-    margin: 0 0 8px;
-    color: var(--ink-soft);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
+  .highlightList { display: grid; gap: 10px; }
+  .highlightItem {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 12px;
+    background: #F7F9FC;
+    border: 1px solid var(--line);
+    border-radius: 8px;
   }
-  .summaryRow {
+  .highlightItem__icon {
+    flex: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-    padding: 9px 0;
-    border-bottom: 1px solid var(--line);
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    margin-top: 1px;
   }
-  .summaryRow:last-child { border-bottom: none; }
-  .summaryRow__tema { font-size: 13.5px; color: var(--ink); flex: 1 1 150px; min-width: 130px; }
-  .summaryRow__badges { display: flex; gap: 16px; flex-wrap: wrap; }
-  .summaryBadge { display: flex; flex-direction: column; gap: 3px; align-items: flex-start; }
-  .summaryBadge__cap { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; color: var(--ink-soft); }
-  .summaryBadge .delta { margin: 0; }
+  .highlightItem__icon.up { background: rgba(21, 138, 82, 0.12); color: #157F4D; }
+  .highlightItem__icon.down { background: rgba(199, 43, 43, 0.12); color: #C72B2B; }
+  .highlightItem__icon.eq { background: #EDF0F5; color: var(--ink-soft); }
+  .highlightItem__body h3 { font-family: var(--serif); font-size: 15px; font-weight: 600; margin: 0 0 4px; color: var(--blue-800); }
+  .highlightItem__body p { margin: 0; font-size: 13.5px; color: var(--ink); line-height: 1.5; }
 
   /* ---------- SUGESTÕES ---------- */
   .suggestSection {
@@ -592,10 +593,20 @@
 </div>
 
 <div class="summarySection" id="summarySection">
-  <h2>3ª Proposta / Final — resumo visual</h2>
+  <h2>Principais pontos discutidos da Negociação</h2>
   <div class="summarySection__card">
-    <p>Onde a proposta final da Caixa está frente ao que já temos hoje e frente ao que a pauta de reivindicações pede, tema a tema.</p>
-    <div id="summaryTable"></div>
+    <p>Avaliação de quem acompanhou a mesa, ponto a ponto — diferente do indicador automático dos cards abaixo, é uma leitura humana sobre o que mais pesa na decisão.</p>
+    <div class="highlightList">
+      <div class="highlightItem"><span class="highlightItem__icon eq">=</span><div class="highlightItem__body"><h3>Reajuste salarial</h3><p>3ª proposta igual ao acordo de 2024/2026 (INPC + 0,6%).</p></div></div>
+      <div class="highlightItem"><span class="highlightItem__icon eq">=</span><div class="highlightItem__body"><h3>Prêmio Extraordinário</h3><p>3ª proposta igual ao acordo de 2024/2026 (R$ 3.000 por empregado).</p></div></div>
+      <div class="highlightItem"><span class="highlightItem__icon up">▲</span><div class="highlightItem__body"><h3>SuperCaixa</h3><p>Melhorou, está menos pior, pois passa a fazer parte do ACT — porém ainda muito distante da reivindicação ("Vendeu, Recebeu").</p></div></div>
+      <div class="highlightItem"><span class="highlightItem__icon eq">=</span><div class="highlightItem__body"><h3>Calendário de Pagamento</h3><p>Está igual ao acordo de 2024/2026 — depende do resultado da votação.</p></div></div>
+      <div class="highlightItem"><span class="highlightItem__icon up">▲</span><div class="highlightItem__body"><h3>Saúde Caixa — Custeio da Caixa</h3><p>Melhorou o compromisso de custeio da Caixa: o teto sai de 6,5% para 9% — porém ainda bem longe do 70/30.</p></div></div>
+      <div class="highlightItem"><span class="highlightItem__icon down">▼</span><div class="highlightItem__body"><h3>Saúde Caixa — Custeio do Empregado</h3><p>Piorou o custeio para o empregado: apesar de retirada a cobrança por faixa de idade, o valor de contribuição subiu para o titular, para os dependentes (diretos e indiretos) e no custeio dos atendimentos.</p></div></div>
+      <div class="highlightItem"><span class="highlightItem__icon eq">=</span><div class="highlightItem__body"><h3>Saúde Caixa — 13ª mensalidade</h3><p>Continua sendo cobrada — o que continua sendo perda para o empregado.</p></div></div>
+      <div class="highlightItem"><span class="highlightItem__icon up">▲</span><div class="highlightItem__body"><h3>Atendimento remoto Fígital/Genesys</h3><p>Melhorou, ao amenizar a situação atual e não impor uma perda tão imediata.</p></div></div>
+      <div class="highlightItem"><span class="highlightItem__icon up">▲</span><div class="highlightItem__body"><h3>Propostas de GTs</h3><p>Melhorou: agora estão previstos Grupos de Trabalho para PFG, PSI, Saúde Caixa, Remuneração Variável, Piso de TI e Trabalho Remoto (resta saber a efetividade e a aplicação).</p></div></div>
+    </div>
   </div>
 </div>
 
@@ -835,8 +846,6 @@
       return '<h2 class="group-title" id="g-' + slug(g.grupo) + '">' + escapeHtml(g.grupo) + '</h2>' + cards;
     }).join("") + legendHtml();
 
-    document.getElementById("summaryTable").innerHTML = summaryHtml(groups);
-
     document.body.classList.toggle("editing", editing);
     bindEditableHandlers();
   }
@@ -993,30 +1002,6 @@
       '</div>';
     }).join("");
     return '<article class="card"><h3>' + escapeHtml(row.tema) + '</h3><dl style="margin:0;">' + fields + '</dl></article>';
-  }
-
-  function summaryHtml(groups) {
-    return groups.map(function (g) {
-      var rows = g.items.map(function (r) {
-        var ind = computeIndicator(r.hoje, r.p3, 1);
-        return '<div class="summaryRow">' +
-          '<div class="summaryRow__tema">' + escapeHtml(r.tema) + '</div>' +
-          '<div class="summaryRow__badges">' +
-            summaryBadgeHtml(ind, "vs. Hoje") +
-          '</div>' +
-        '</div>';
-      }).join("");
-      return '<div class="summaryGroup"><h3>' + escapeHtml(g.grupo) + '</h3>' + rows + '</div>';
-    }).join("");
-  }
-
-  function summaryBadgeHtml(text, caption) {
-    var cls = deltaClass(text || "");
-    var icon = badgeIcon(cls);
-    return '<span class="summaryBadge">' +
-      '<span class="summaryBadge__cap">' + caption + '</span>' +
-      '<span class="delta ' + cls + '">' + (icon ? '<i class="delta__icon">' + icon + '</i>' : "") + '<span class="delta__text">' + escapeHtml(text || "") + '</span></span>' +
-    '</span>';
   }
 
   function legendHtml() {
