@@ -706,7 +706,7 @@
   // ---------------- DATA ----------------
   // Cada linha: id, tema, grupo, e os 5 campos (texto vazio = pendente)
   var SEED = {
-    updatedAt: "20/09/2026",
+    updatedAt: "21/09/2026",
     rows: [
       { id:"reajuste", grupo:"Dinheiro no bolso", tema:"Reajuste salarial",
         hoje:"4,64% (2024)\nINPC + 0,6% (2025)",
@@ -726,14 +726,28 @@
         hoje:"Regulamento próprio (fora do ACT)",
         p1:"", p1i:"",
         p2:"", p2i:"",
-        p3:"Dobro de premiação na habilitação inicial (50%) + regras simplificadas", p3i:"", p3ir:"",
+        p3:"Dobro de premiação na habilitação inicial (50%); regras de habilitação simplificadas para 100% da premiação; NS passa a ser o resultado individual de cada empregado (exceto gestores de unidade e quem não tem NS calculado, que mantêm o NS da unidade); CSAT deixa de impactar todos e passa a valer só para o chefe de unidade; mais tempestividade no Painel SuperCAIXA; comissão para avaliação de casos individuais.\nCompromissos para 2027: revisão dos gatilhos de premiação de seguridade e TDV, divulgação tempestiva do regulamento, estudo sobre premiação de novos produtos e revisão da medição de satisfação do cliente.", p3i:"", p3ir:"",
         reiv:"Modelo \"vendeu, recebeu\": pagamento integral de comissões e premiações; veda redução por metas ou indicadores de satisfação" },
+
+      { id:"beneficios", grupo:"Dinheiro no bolso", tema:"Benefícios (cesta, refeição, PAI/PDI)",
+        hoje:"Auxílio Cesta Alimentação R$ 924,47\n13ª Cesta Alimentação R$ 924,47\nAuxílio Refeição R$ 1.173,26\nPAI/PDI (Auxílio Filhos com Deficiência / Creche-Babá) R$ 697,14",
+        p1:"", p1i:"",
+        p2:"", p2i:"",
+        p3:"Auxílio Cesta Alimentação R$ 967,00\n13ª Cesta Alimentação R$ 967,00\nAuxílio Refeição R$ 1.227,16\nPAI/PDI (Auxílio Filhos com Deficiência / Creche-Babá) R$ 729,21", p3i:"Melhorou (reajuste de 4,60% = INPC + 0,6%)", p3ir:"",
+        reiv:"" },
+
+      { id:"pagamentoSetembro", grupo:"Dinheiro no bolso", tema:"Calendário de pagamento (setembro/2026)",
+        hoje:"Sem cronograma específico anunciado",
+        p1:"", p1i:"",
+        p2:"", p2i:"",
+        p3:"Em 30/09, no reprocessamento da folha e mediante aprovação da proposta: reajuste salarial, adiantamento da PLR, Super CAIXA do 1º semestre/2026 e prêmio IEO, todos pagos juntos", p3i:"", p3ir:"",
+        reiv:"" },
 
       { id:"plr", grupo:"Dinheiro no bolso", tema:"PLR 2026/2027",
         hoje:"Regras de 2024/2025",
         p1:"", p1i:"",
         p2:"", p2i:"",
-        p3:"Mantém regras e cálculo de 2024/2025", p3i:"Igual ao ACT atual", p3ir:"",
+        p3:"Mantém regras e cálculo de 2024/2025; ajusta só a redação das cláusulas para maior clareza (sem mudança de regra)", p3i:"Igual ao ACT atual", p3ir:"",
         reiv:"PLR Social adicional: 6% do lucro líquido, linear, sem teto; elimina limitador de 3 salários" },
 
       { id:"merito", grupo:"Dinheiro no bolso", tema:"Promoção por mérito",
@@ -747,8 +761,15 @@
         hoje:"Até 6,5% da folha",
         p1:"Aumento da participação dos beneficiários (percentual não detalhado)", p1i:"",
         p2:"Sobe para 8% (a partir de 2027)", p2i:"Melhorou +23% (6,5% → 8%)",
-        p3:"Sobe para 9% (a partir de 2027)", p3i:"Melhorou +38% (6,5% → 9%)", p3ir:"",
+        p3:"Sobe para 9% (a partir de 2027); alíquota única de 3,7% para ativos, aposentados e pensionistas (mantém o pacto intergeracional)", p3i:"Melhorou +38% (6,5% → 9%)", p3ir:"",
         reiv:"Fim do teto; proporção 70% Caixa / 30% empregado" },
+
+      { id:"custeio2027", grupo:"Saúde Caixa", tema:"Novo Modelo de Custeio (vigência jan/2027)",
+        hoje:"Regras de custeio vigentes (2024–2026)",
+        p1:"", p1i:"",
+        p2:"Mensalidade ativos 2,3% a 4,1% · aposentados 3,9% (por faixa etária)\nDependentes R$ 480 a R$ 660 (por faixa etária)\nCoparticipação anual R$ 4.800 · Pronto-socorro R$ 150", p2i:"",
+        p3:"Mensalidade única de 3,7% para ativos e aposentados\nDependente direto R$ 560 (valor fixo, dentro do teto familiar)\nDependente indireto filho 21–24 anos R$ 660 e pais/judiciais/filhos 24–27 anos R$ 900 (ambos fora do teto familiar)\nTeto familiar 9% · Piso por beneficiário R$ 50\nCoparticipação anual R$ 4.700 · Pronto-socorro R$ 120 · Telemedicina isenta · 13 mensalidades/ano\nAções de prevenção à saúde: R$ 236 milhões (2027)\nAdesão e cancelamento: impossibilidade de reingresso após o cancelamento, prazo de 90 dias para adesão/retorno\nGestão do Saúde Caixa: apresentação de novo projeto de gestão em até 60 dias", p3i:"", p3ir:"",
+        reiv:"" },
 
       { id:"idade", grupo:"Saúde Caixa", tema:"Cobrança por faixa etária",
         hoje:"Sem cobrança diferenciada",
@@ -767,8 +788,8 @@
       { id:"indenizacao", grupo:"Rotina & direitos", tema:"Indenização assalto/sinistro",
         hoje:"R$ 266.020,28",
         p1:"", p1i:"",
-        p2:"", p2i:"",
-        p3:"Sem alteração", p3i:"Igual ao ACT atual", p3ir:"",
+        p2:"R$ 281.130,23", p2i:"Melhorou (reajuste sobre o valor vigente)",
+        p3:"R$ 294.062,22 (reajuste de INPC + 0,6%)", p3i:"Melhorou (de R$ 266.020,28 para R$ 294.062,22)", p3ir:"",
         reiv:"R$ 1.000.000,00" },
 
       { id:"maternidade", grupo:"Rotina & direitos", tema:"Licença maternidade",
@@ -782,7 +803,7 @@
         hoje:"Regras vigentes",
         p1:"", p1i:"",
         p2:"", p2i:"",
-        p3:"Prazo de início ajustado de 5 para 10 min (até 12/2026)", p3i:"", p3ir:"",
+        p3:"De set. a 31/12/2026: prazo regulamentar para início do atendimento remoto passa de 5 para 10 minutos; até 31/12/2026, sem penalidade no Alcance.CAIXA para unidades FÍGITAL que ultrapassarem 5 min; indicador no Alcance.CAIXA passa a ter caráter apenas informativo, sem efeito de penalização", p3i:"Melhorou", p3ir:"",
         reiv:"" },
 
       { id:"transporte", grupo:"Rotina & direitos", tema:"Vale-transporte",
@@ -791,6 +812,48 @@
         p2:"", p2i:"",
         p3:"Sem alteração", p3i:"Igual ao ACT atual", p3ir:"",
         reiv:"Custeio 100% Caixa, sem custo ao empregado" },
+
+      { id:"licencaSaude", grupo:"Rotina & direitos", tema:"Adiantamento salarial em licença-saúde",
+        hoje:"Adesão ao adiantamento não é opcional; cobrança dos valores segue mesmo durante recurso previdenciário",
+        p1:"", p1i:"",
+        p2:"", p2i:"",
+        p3:"Adesão passa a ser opcional; cobrança suspensa enquanto houver recurso do benefício previdenciário até a conclusão das instâncias recursais; em caso de indeferimento, possibilidade de parcelamento do valor devido ou compensação das horas", p3i:"Melhorou", p3ir:"",
+        reiv:"" },
+
+      { id:"abonoFerias", grupo:"Rotina & direitos", tema:"Abono pecuniário de férias",
+        hoje:"Conversão de 1/3 das férias em abono com gozo concomitante dos dias",
+        p1:"", p1i:"",
+        p2:"", p2i:"",
+        p3:"Possibilidade de conversão de até 1/3 das férias (até 10 dias) em abono pecuniário, sem necessidade de gozo concomitante das férias, conforme conveniência do empregado", p3i:"Melhorou", p3ir:"",
+        reiv:"" },
+
+      { id:"gtTrajetoria", grupo:"Rotina & direitos", tema:"Grupo de Trabalho Trajetória",
+        hoje:"Não previsto",
+        p1:"", p1i:"",
+        p2:"", p2i:"",
+        p3:"Grupo de Trabalho para viabilizar escuta dos representantes dos empregados sobre temas estruturantes de carreira: PFG, PSI, remuneração variável, piso de TI e trabalho remoto", p3i:"", p3ir:"",
+        reiv:"" },
+
+      { id:"pcd", grupo:"Rotina & direitos", tema:"Empregados com deficiência (PcD)",
+        hoje:"Fluxo de enquadramento vigente; condições especiais de mobilidade/jornada previstas só para quem tem dependente PcD",
+        p1:"", p1i:"",
+        p2:"", p2i:"",
+        p3:"Fluxo de enquadramento como PcD mais claro (critérios, documentos e etapas, inclusive casos de TEA); extensão aos próprios empregados PcD das condições hoje dadas a quem tem dependente PcD, mediante análise individual — mobilidade entre presencial/remoto/híbrido e/ou redução de até 25% da jornada diária para tratamento", p3i:"Melhorou", p3ir:"",
+        reiv:"" },
+
+      { id:"ausenciasFlex", grupo:"Rotina & direitos", tema:"Flexibilidade das ausências permitidas",
+        hoje:"Acompanhamento em saúde: até 12h ou 16h por ano (conforme jornada) para acompanhar cônjuge, pais, filhos ou dependentes menores de 18 anos",
+        p1:"", p1i:"",
+        p2:"", p2i:"",
+        p3:"Acompanhamento em saúde: fim do limite de idade dos filhos/enteados, com possibilidade de uso das horas também pelo próprio empregado em cuidados de saúde\nCasamento e paternidade: licenças utilizáveis em até 180 dias após o fato gerador\nPrevenção: até 3 dias por ano para exames preventivos de câncer e HPV", p3i:"Melhorou", p3ir:"",
+        reiv:"" },
+
+      { id:"diversidade", grupo:"Rotina & direitos", tema:"Diversidade, equidade, inclusão e acessibilidade",
+        hoje:"Ações de diversidade e inclusão em curso",
+        p1:"", p1i:"",
+        p2:"", p2i:"",
+        p3:"Fortalecimento da inclusão e da equidade nos processos seletivos; Censo da Diversidade periódico; continuidade do letramento, conscientização e dos Coletivos de Diversidade, agenda de equidade de gênero e campanhas de combate à discriminação; ampliação de acessibilidade física, tecnológica e comunicacional", p3i:"", p3ir:"",
+        reiv:"" },
     ]
   };
 
@@ -953,7 +1016,7 @@
       '<li><span class="delta delta--eq" style="margin:0;"><i class="delta__icon">=</i><span class="delta__text">Igual</span></span> ao ACT atual, sem mudança</li>' +
       '<li><span class="delta delta--neutral" style="margin:0;"><span class="delta__text">Impacto a avaliar</span></span> — ainda sem uma avaliação definida</li>' +
       '</ul>' +
-      '<div class="sources">Fontes: ACT Geral CAIXA/CONTRAF 2024–2026 · Propostas 1ª (imagem-resumo), 2ª e 3ª/Final (Anexo I) · Minuta da Pauta de Reivindicações 2026–2028 · Comparativo do Sindicato dos Bancários. Revisado linha a linha contra os documentos originais.</div>' +
+      '<div class="sources">Fontes: ACT Geral CAIXA/CONTRAF 2024–2026 · Propostas 1ª (imagem-resumo), 2ª e 3ª/Final (Anexo I, 21/09) · Apresentação interna "Negociação Coletiva" (18/09) · Minuta da Pauta de Reivindicações 2026–2028 · Comparativo do Sindicato dos Bancários. Revisado linha a linha contra os documentos originais.</div>' +
     '</div>';
   }
 
