@@ -24,18 +24,18 @@ de reivindicações dos empregados na Data-Base 2026.
 3. Pronto — qualquer pessoa com o link pode visualizar e, ao clicar em **"Editar página"**,
    alterar os campos e salvar para todo mundo.
 
-## Exigência de fonte e histórico de alterações
+## Fonte (opcional) e histórico de alterações
 
 Quem edita qualquer campo já existente na tabela (valor ou selo de indicador) e clica em **"Salvar
 alterações"** vê, antes de salvar, um resumo de tudo que mudou (tema, coluna, valor antigo → novo).
-Cada alteração exige uma fonte — um link, ou um arquivo (PDF ou imagem, até 4MB) anexado ali mesmo,
-que é enviado automaticamente e vira o link da fonte. Sem fonte preenchida em todas as alterações do
-lote, o botão de confirmar não salva nada. Um nome/setor de quem editou é opcional.
+Cada alteração pode receber uma fonte — um link, ou um arquivo (PDF ou imagem, até 4MB) anexado ali
+mesmo, que é enviado automaticamente e vira o link da fonte. A fonte não é obrigatória para salvar;
+a página apenas incentiva o envio ("Envie a fonte para ampliarmos a biblioteca de informações").
 
 Depois de confirmado, cada alteração vira uma entrada no **histórico de alterações**, visível
-publicamente na própria página (data/hora, quem editou, tema, coluna, valor antigo → novo e a fonte),
-antes de a tabela principal ser efetivamente atualizada — dando rastreabilidade completa de quem
-mudou o quê e com base em que fonte.
+publicamente na própria página (data/hora, tema, coluna, valor antigo → novo e a fonte, quando
+informada), antes de a tabela principal ser efetivamente atualizada — dando rastreabilidade de quem
+mudou o quê e com base em que fonte, quando disponível.
 
 ## Sugestões dos visitantes
 

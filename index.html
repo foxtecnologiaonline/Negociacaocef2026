@@ -311,7 +311,7 @@
     display: grid;
     gap: 10px;
   }
-  .suggestForm textarea, .suggestForm input {
+  .suggestForm textarea {
     width: 100%;
     font-family: var(--sans);
     font-size: 14px;
@@ -322,8 +322,8 @@
     padding: 10px 12px;
     resize: vertical;
   }
-  .suggestForm textarea::placeholder, .suggestForm input::placeholder { color: var(--ink-soft); }
-  .suggestForm textarea:focus, .suggestForm input:focus {
+  .suggestForm textarea::placeholder { color: var(--ink-soft); }
+  .suggestForm textarea:focus {
     outline: none;
     border-color: var(--orange);
     box-shadow: 0 0 0 2px rgba(255, 122, 26, 0.25);
@@ -372,7 +372,7 @@
   .changelogItem .src a { color: var(--orange); }
   .changelogList__empty { font-size: 13px; color: var(--ink-soft); font-style: italic; padding: 4px 2px; }
 
-  /* ---------- MODAL: CONFIRMAR ALTERAÇÕES (exige fonte) ---------- */
+  /* ---------- MODAL: CONFIRMAR ALTERAÇÕES (fonte opcional) ---------- */
   .modalOverlay {
     position: fixed;
     inset: 0;
@@ -407,7 +407,7 @@
   .changeRow__diff .old { color: var(--ink-soft); text-decoration: line-through; }
   .changeRow__diff .new { color: #7CE3A8; font-weight: 600; }
   .changeRow__label { display: block; font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; color: var(--ink-soft); margin-bottom: 4px; }
-  .changeSource, #confirmEditorName {
+  .changeSource {
     width: 100%;
     font-family: var(--sans);
     font-size: 14px;
@@ -418,8 +418,8 @@
     padding: 9px 11px;
     margin-bottom: 6px;
   }
-  .changeSource::placeholder, #confirmEditorName::placeholder { color: var(--ink-soft); }
-  .changeSource:focus, #confirmEditorName:focus {
+  .changeSource::placeholder { color: var(--ink-soft); }
+  .changeSource:focus {
     outline: none;
     border-color: var(--orange);
     box-shadow: 0 0 0 2px rgba(255, 122, 26, 0.25);
@@ -538,7 +538,6 @@
   </div>
   <form id="suggestForm" class="suggestForm" style="display:none;">
     <textarea id="suggestText" maxlength="1000" rows="3" placeholder="Descreva o ponto importante que deveria estar no comparativo..." required></textarea>
-    <input id="suggestName" type="text" maxlength="80" placeholder="Seu nome ou setor (opcional)">
     <div class="suggestForm__actions">
       <button type="submit" id="btnSuggestSend">Enviar sugestão</button>
       <button type="button" class="ghost" id="btnSuggestCancel">Cancelar</button>
@@ -552,7 +551,7 @@
 
 <div class="changelogSection" id="changelogSection">
   <h2>Histórico de alterações</h2>
-  <p>Toda edição feita na tabela acima fica registrada aqui, com a fonte informada por quem alterou.</p>
+  <p>Toda edição feita na tabela acima fica registrada aqui, com a fonte informada, quando enviada.</p>
   <div id="changelogList" class="changelogList"></div>
 </div>
 
@@ -846,7 +845,7 @@
 
   // Compara o estado salvo com o que está no DOM e retorna só os campos que
   // mudaram de fato — cada um vira uma linha no modal de confirmação, que
-  // exige uma fonte antes de deixar salvar.
+  // incentiva (sem exigir) informar uma fonte antes de salvar.
   function diffRows(oldRows, newRows) {
     var changes = [];
     newRows.forEach(function (newRow) {
@@ -929,7 +928,7 @@
     });
   }
 
-  // ---------------- CONFIRMAR ALTERAÇÃO (exige fonte) ----------------
+  // ---------------- CONFIRMAR ALTERAÇÃO (fonte opcional) ----------------
   var confirmOverlay = document.getElementById("confirmOverlay");
 
   function truncate(s, n) {
@@ -951,7 +950,7 @@
       return '<div class="changeRow">' +
         '<div class="changeRow__meta"><b>' + escapeHtml(c.tema) + '</b> · ' + escapeHtml(c.colLabel) + '</div>' +
         '<div class="changeRow__diff"><span class="old">' + escapeHtml(truncate(c.oldValue, 80)) + '</span> → <span class="new">' + escapeHtml(truncate(c.newValue, 80)) + '</span></div>' +
-        '<label class="changeRow__label">Fonte (link, ou anexe um PDF/imagem) *</label>' +
+        '<label class="changeRow__label">Fonte (link, ou anexe um PDF/imagem)</label>' +
         '<input type="text" class="changeSource" data-idx="' + i + '" placeholder="https://...">' +
         '<input type="file" class="changeFile" data-idx="' + i + '" accept="application/pdf,image/png,image/jpeg,image/webp,image/gif">' +
         '<span class="changeFile__status" data-idx="' + i + '"></span>' +
@@ -959,10 +958,8 @@
     }).join("");
     return '<div class="modalCard">' +
       '<h3>Confirmar alterações</h3>' +
-      '<p>Cada alteração precisa de uma fonte (link, PDF ou imagem) para ficar registrada no histórico público da página.</p>' +
+      '<p>Envie a fonte para ampliarmos a biblioteca de informações — não é obrigatório, mas ajuda muito.</p>' +
       '<div class="changeList">' + rows + '</div>' +
-      '<label class="changeRow__label">Seu nome ou setor (opcional, vale para todas as alterações acima)</label>' +
-      '<input type="text" id="confirmEditorName" maxlength="80" placeholder="Ex.: João, Sindicato Regional SP">' +
       '<div class="modalActions">' +
         '<button type="button" id="btnConfirmSave">Confirmar e salvar</button>' +
         '<button type="button" class="ghost" id="btnConfirmBack">Voltar a editar</button>' +
@@ -1027,25 +1024,9 @@
   function onConfirmSaveClick() {
     var confirmStatusEl = document.getElementById("confirmStatus");
     var sourceInputs = document.querySelectorAll(".changeSource");
-    var missing = false;
-    sourceInputs.forEach(function (inp) {
-      if (!inp.value.trim()) {
-        inp.style.borderColor = "var(--pending-line)";
-        missing = true;
-      } else {
-        inp.style.borderColor = "";
-      }
-    });
-    if (missing) {
-      confirmStatusEl.textContent = "Preencha a fonte de todas as alterações antes de salvar.";
-      return;
-    }
-
-    var editorName = document.getElementById("confirmEditorName").value.trim();
     sourceInputs.forEach(function (inp) {
       var idx = Number(inp.getAttribute("data-idx"));
       pendingChanges[idx].source = inp.value.trim();
-      pendingChanges[idx].editor = editorName || null;
     });
 
     var btn = document.getElementById("btnConfirmSave");
@@ -1088,7 +1069,7 @@
       var isLink = /^https?:\/\//i.test(c.source || "");
       var srcHtml = isLink
         ? '<a href="' + escapeHtml(c.source) + '" target="_blank" rel="noopener noreferrer nofollow">Ver fonte</a>'
-        : escapeHtml(c.source || "");
+        : escapeHtml(c.source || "não informada");
       return '<div class="changelogItem">' +
         '<div class="meta">' + who + (when ? " · " + when : "") + ' · ' + escapeHtml(c.tema) + ' · ' + escapeHtml(c.colLabel) + '</div>' +
         '<div class="diff"><span class="old">' + escapeHtml(truncate(c.oldValue, 100)) + '</span> → <span class="new">' + escapeHtml(truncate(c.newValue, 100)) + '</span></div>' +
@@ -1114,7 +1095,6 @@
   var btnSuggestCancel = document.getElementById("btnSuggestCancel");
   var btnSuggestSend = document.getElementById("btnSuggestSend");
   var suggestText = document.getElementById("suggestText");
-  var suggestName = document.getElementById("suggestName");
   var suggestStatusEl = document.getElementById("suggestStatus");
   var suggestListEl = document.getElementById("suggestList");
 
@@ -1170,7 +1150,7 @@
     fetch("/api/suggestions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: text, name: suggestName.value.trim() })
+      body: JSON.stringify({ text: text })
     }).then(function (r) {
       if (!r.ok) return r.json().then(function (e) { throw new Error((e && e.error) || ("http_" + r.status)); });
       return r.json();
