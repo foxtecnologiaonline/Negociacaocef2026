@@ -350,36 +350,6 @@
   .suggestItem .meta { font-size: 11.5px; color: var(--ink-soft); }
   .suggestList__empty { font-size: 13px; color: var(--ink-soft); font-style: italic; padding: 4px 2px; }
 
-  /* ---------- HISTÓRICO DE ALTERAÇÕES ---------- */
-  .changelogSection {
-    max-width: 800px;
-    margin: 0 auto 8px;
-    padding: 0 20px;
-  }
-  .changelogSection > h2 {
-    font-family: var(--serif);
-    font-size: 17px;
-    margin: 0 0 4px;
-    color: var(--blue-800);
-  }
-  .changelogSection > p { margin: 0 0 10px; font-size: 13px; color: var(--ink-soft); }
-  .changelogList { display: grid; gap: 8px; }
-  .changelogItem {
-    background: var(--paper-card);
-    border: 1px solid var(--line);
-    border-left: 3px solid var(--c-p1);
-    border-radius: 6px;
-    padding: 10px 12px;
-    font-size: 13px;
-  }
-  .changelogItem .meta { font-size: 11.5px; color: var(--ink-soft); margin-bottom: 4px; }
-  .changelogItem .diff { color: var(--ink); margin-bottom: 4px; white-space: pre-line; }
-  .changelogItem .diff .old { color: var(--ink-soft); text-decoration: line-through; }
-  .changelogItem .diff .new { color: var(--ink); font-weight: 600; }
-  .changelogItem .src { font-size: 11.5px; }
-  .changelogItem .src a { color: var(--blue-700); }
-  .changelogList__empty { font-size: 13px; color: var(--ink-soft); font-style: italic; padding: 4px 2px; }
-
   /* ---------- MODAL: CONFIRMAR ALTERAÇÕES (exige fonte) ---------- */
   .modalOverlay {
     position: fixed;
@@ -557,12 +527,6 @@
 </div>
 
 <main id="main"></main>
-
-<div class="changelogSection" id="changelogSection">
-  <h2>Histórico de alterações</h2>
-  <p>Toda edição feita na tabela acima fica registrada aqui, com a fonte informada por quem alterou.</p>
-  <div id="changelogList" class="changelogList"></div>
-</div>
 
 <div class="bar">
   <div class="bar__inner">
@@ -912,7 +876,7 @@
         btnEdit.textContent = "Editar página";
         btnCancel.style.display = "none";
         render();
-        setStatus("Salvo ✅ — alteração registrada no histórico e visível para todos.", true);
+        setStatus("Salvo ✅ — alteração aplicada e visível para todos.", true);
       });
     });
   }
@@ -967,7 +931,7 @@
     }).join("");
     return '<div class="modalCard">' +
       '<h3>Confirmar alterações</h3>' +
-      '<p>Cada alteração precisa de uma fonte (link, PDF ou imagem) para ficar registrada no histórico público da página.</p>' +
+      '<p>Cada alteração precisa de uma fonte (link, PDF ou imagem) para manter o registro de onde vem cada informação.</p>' +
       '<div class="changeList">' + rows + '</div>' +
       '<label class="changeRow__label">Seu nome ou setor (opcional, vale para todas as alterações acima)</label>' +
       '<input type="text" id="confirmEditorName" maxlength="80" placeholder="Ex.: João, Sindicato Regional SP">' +
@@ -1071,48 +1035,10 @@
       return finishSave();
     }).then(function () {
       closeConfirmModal();
-      loadChangelog();
     }).catch(function (err) {
       btn.disabled = false;
       var detail = (err && err.message) ? err.message : "";
       confirmStatusEl.textContent = "Não deu para registrar a alteração agora." + (detail ? " (" + detail + ")" : " Tente de novo.");
-    });
-  }
-
-  // ---------------- HISTÓRICO DE ALTERAÇÕES ----------------
-  var changelogListEl = document.getElementById("changelogList");
-
-  function renderChangelog(list) {
-    if (!list || !list.length) {
-      changelogListEl.innerHTML = '<div class="changelogList__empty">Nenhuma alteração registrada ainda.</div>';
-      return;
-    }
-    changelogListEl.innerHTML = list.map(function (c) {
-      var when = "";
-      try {
-        when = new Date(c.at).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
-      } catch (e) {}
-      var who = c.editor ? escapeHtml(c.editor) : "Anônimo";
-      var isLink = /^https?:\/\//i.test(c.source || "");
-      var srcHtml = isLink
-        ? '<a href="' + escapeHtml(c.source) + '" target="_blank" rel="noopener noreferrer nofollow">Ver fonte</a>'
-        : escapeHtml(c.source || "");
-      return '<div class="changelogItem">' +
-        '<div class="meta">' + who + (when ? " · " + when : "") + ' · ' + escapeHtml(c.tema) + ' · ' + escapeHtml(c.colLabel) + '</div>' +
-        '<div class="diff"><span class="old">' + escapeHtml(truncate(c.oldValue, 100)) + '</span> → <span class="new">' + escapeHtml(truncate(c.newValue, 100)) + '</span></div>' +
-        '<div class="src">Fonte: ' + srcHtml + '</div>' +
-      '</div>';
-    }).join("");
-  }
-
-  function loadChangelog() {
-    fetch("/api/changelog", { cache: "no-store" }).then(function (r) {
-      if (!r.ok) throw new Error("http_" + r.status);
-      return r.json();
-    }).then(function (data) {
-      renderChangelog(data && data.changes);
-    }).catch(function () {
-      changelogListEl.innerHTML = '<div class="changelogList__empty">Não deu para carregar o histórico agora.</div>';
     });
   }
 
@@ -1145,7 +1071,7 @@
 
   function renderSuggestions(list) {
     if (!list || !list.length) {
-      suggestListEl.innerHTML = '<div class="suggestList__empty">Nenhuma sugestão enviada ainda. Seja o primeiro!</div>';
+      suggestListEl.innerHTML = '<div class="suggestList__empty">Nenhuma sugestão enviada ainda.</div>';
       return;
     }
     suggestListEl.innerHTML = list.map(function (s) {
@@ -1199,7 +1125,6 @@
   render();
   load();
   loadSuggestions();
-  loadChangelog();
 })();
 </script>
 <script defer src="/_vercel/insights/script.js"></script>

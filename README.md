@@ -32,18 +32,19 @@ Cada alteração exige uma fonte — um link, ou um arquivo (PDF ou imagem, até
 que é enviado automaticamente e vira o link da fonte. Sem fonte preenchida em todas as alterações do
 lote, o botão de confirmar não salva nada. Um nome/setor de quem editou é opcional.
 
-Depois de confirmado, cada alteração vira uma entrada no **histórico de alterações**, visível
-publicamente na própria página (data/hora, quem editou, tema, coluna, valor antigo → novo e a fonte),
-antes de a tabela principal ser efetivamente atualizada — dando rastreabilidade completa de quem
-mudou o quê e com base em que fonte.
+Depois de confirmado, cada alteração vira uma entrada no histórico gravado via `/api/changelog`
+(data/hora, quem editou, tema, coluna, valor antigo → novo e a fonte), antes de a tabela principal
+ser efetivamente atualizada — dando rastreabilidade completa de quem mudou o quê e com base em que
+fonte. **Esse histórico não é exibido na página pública** — fica só no Blob Storage, consultável via
+`GET /api/changelog`, para quem administra a página revisar quando precisar.
 
 ## Sugestões dos visitantes
 
 Qualquer visitante pode clicar em **"Sugerir um ponto"** (logo abaixo do topo da página) e enviar
 um texto livre (até 1000 caracteres) com um ponto importante que acha que falta no comparativo.
-As sugestões ficam listadas na própria página, mais recentes primeiro, para revisão — nada é
-incorporado automaticamente ao comparativo; quem administra a página decide o que entra, editando
-manualmente em **"Editar página"**.
+As sugestões ficam listadas publicamente na própria página, mais recentes primeiro, para qualquer
+visitante ver — nada é incorporado automaticamente ao comparativo; quem administra a página decide
+o que entra, editando manualmente em **"Editar página"**.
 
 ## Analytics e tracking
 
