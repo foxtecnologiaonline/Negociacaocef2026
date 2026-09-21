@@ -342,6 +342,92 @@
   .suggestItem .meta { font-size: 11.5px; color: var(--ink-soft); }
   .suggestList__empty { font-size: 13px; color: var(--ink-soft); font-style: italic; padding: 4px 2px; }
 
+  /* ---------- HISTÓRICO DE ALTERAÇÕES ---------- */
+  .changelogSection {
+    max-width: 760px;
+    margin: 0 auto 8px;
+    padding: 0 20px;
+  }
+  .changelogSection > h2 {
+    font-family: var(--serif);
+    font-size: 17px;
+    margin: 0 0 4px;
+    color: var(--ink);
+  }
+  .changelogSection > p { margin: 0 0 10px; font-size: 13px; color: var(--ink-soft); }
+  .changelogList { display: grid; gap: 8px; }
+  .changelogItem {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--c-p1);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  .changelogItem .meta { font-size: 11.5px; color: var(--ink-soft); margin-bottom: 4px; }
+  .changelogItem .diff { color: var(--ink); margin-bottom: 4px; white-space: pre-line; }
+  .changelogItem .diff .old { color: var(--ink-soft); text-decoration: line-through; }
+  .changelogItem .diff .new { color: var(--ink); font-weight: 600; }
+  .changelogItem .src { font-size: 11.5px; }
+  .changelogItem .src a { color: var(--orange); }
+  .changelogList__empty { font-size: 13px; color: var(--ink-soft); font-style: italic; padding: 4px 2px; }
+
+  /* ---------- MODAL: CONFIRMAR ALTERAÇÕES (exige fonte) ---------- */
+  .modalOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    background: rgba(2, 8, 22, 0.72);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 16px;
+    overflow-y: auto;
+  }
+  .modalCard {
+    background: var(--blue-800);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    max-width: 620px;
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  }
+  .modalCard h3 { font-family: var(--serif); margin: 0 0 6px; font-size: 20px; color: var(--ink); }
+  .modalCard > p { margin: 0 0 16px; font-size: 13.5px; color: var(--ink-soft); }
+  .changeList { display: grid; gap: 14px; margin-bottom: 14px; }
+  .changeRow {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .changeRow__meta { font-size: 13px; color: var(--ink); margin-bottom: 6px; }
+  .changeRow__diff { font-size: 13px; margin-bottom: 8px; }
+  .changeRow__diff .old { color: var(--ink-soft); text-decoration: line-through; }
+  .changeRow__diff .new { color: #7CE3A8; font-weight: 600; }
+  .changeRow__label { display: block; font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; color: var(--ink-soft); margin-bottom: 4px; }
+  .changeSource, #confirmEditorName {
+    width: 100%;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 9px 11px;
+    margin-bottom: 6px;
+  }
+  .changeSource::placeholder, #confirmEditorName::placeholder { color: var(--ink-soft); }
+  .changeSource:focus, #confirmEditorName:focus {
+    outline: none;
+    border-color: var(--orange);
+    box-shadow: 0 0 0 2px rgba(255, 122, 26, 0.25);
+  }
+  .changeFile { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 4px; }
+  .changeFile__status { display: block; font-size: 11.5px; color: var(--ink-soft); min-height: 14px; }
+  .modalActions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+
   /* ---------- LEGEND ---------- */
   .legend {
     margin-top: 36px;
@@ -464,6 +550,12 @@
 
 <main id="main"></main>
 
+<div class="changelogSection" id="changelogSection">
+  <h2>Histórico de alterações</h2>
+  <p>Toda edição feita na tabela acima fica registrada aqui, com a fonte informada por quem alterou.</p>
+  <div id="changelogList" class="changelogList"></div>
+</div>
+
 <div class="bar">
   <div class="bar__inner">
     <span class="status" id="status">Carregando…</span>
@@ -473,6 +565,8 @@
     </div>
   </div>
 </div>
+
+<div id="confirmOverlay" class="modalOverlay"></div>
 
 <script>
 (function () {
@@ -577,9 +671,19 @@
     { key:"reiv", label:"Reivindicação",   cls:"field--reiv" },
   ];
 
+  // Lista achatada de todos os campos rastreáveis (valor + indicador de cada
+  // coluna), usada para comparar o antes/depois de uma edição e montar o log.
+  var TRACKED_FIELDS = [];
+  COLS.forEach(function (c) {
+    TRACKED_FIELDS.push({ key: c.key, label: c.label });
+    if (c.indKey) TRACKED_FIELDS.push({ key: c.indKey, label: c.label + " — indicador" });
+  });
+
   // ---------------- STATE ----------------
   var DATA = SEED;
   var editing = false;
+  var pendingNewRows = null;
+  var pendingChanges = [];
 
   function groupRows(rows) {
     var order = [], map = {};
@@ -719,7 +823,18 @@
       btnCancel.style.display = "inline-block";
       setStatus("Editando — toque em qualquer campo colorido.");
     } else {
-      save();
+      var newRows = collectFromDom();
+      var changes = diffRows(DATA.rows, newRows);
+      if (!changes.length) {
+        editing = false;
+        btnEdit.textContent = "Editar página";
+        btnCancel.style.display = "none";
+        render();
+        setStatus("Nenhuma alteração detectada.");
+        return;
+      }
+      pendingNewRows = newRows;
+      openConfirmModal(changes);
     }
   });
 
@@ -731,16 +846,39 @@
     setStatus("Edição cancelada.");
   });
 
-  function save() {
-    var newRows = collectFromDom();
+  // Compara o estado salvo com o que está no DOM e retorna só os campos que
+  // mudaram de fato — cada um vira uma linha no modal de confirmação, que
+  // exige uma fonte antes de deixar salvar.
+  function diffRows(oldRows, newRows) {
+    var changes = [];
+    newRows.forEach(function (newRow) {
+      var oldRow = oldRows.find(function (r) { return r.id === newRow.id; });
+      if (!oldRow) return;
+      TRACKED_FIELDS.forEach(function (f) {
+        var oldVal = (oldRow[f.key] || "").trim();
+        var newVal = (newRow[f.key] || "").trim();
+        if (oldVal !== newVal) {
+          changes.push({
+            rowId: newRow.id,
+            tema: newRow.tema,
+            col: f.key,
+            colLabel: f.label,
+            oldValue: oldVal,
+            newValue: newVal,
+            source: ""
+          });
+        }
+      });
+    });
+    return changes;
+  }
+
+  function finishSave() {
     var newState = {
       updatedAt: new Date().toLocaleDateString("pt-BR"),
-      rows: newRows
+      rows: pendingNewRows
     };
-    setStatus("Salvando…");
-    btnEdit.disabled = true;
-
-    fetch("/api/data", {
+    return fetch("/api/data", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newState)
@@ -749,15 +887,11 @@
       return r.json();
     }).then(function () {
       DATA = newState;
-      btnEdit.disabled = false;
       editing = false;
       btnEdit.textContent = "Editar página";
       btnCancel.style.display = "none";
       render();
-      setStatus("Salvo ✅ — todos que abrirem a página verão esta versão.", true);
-    }).catch(function () {
-      btnEdit.disabled = false;
-      setStatus("Não deu para salvar agora. Tente de novo em instantes.");
+      setStatus("Salvo ✅ — alteração registrada no histórico e visível para todos.", true);
     });
   }
 
@@ -778,6 +912,185 @@
       setStatus("Não deu para carregar as últimas alterações — mostrando a versão inicial.");
     }).then(function () {
       btnEdit.disabled = false;
+    });
+  }
+
+  // ---------------- CONFIRMAR ALTERAÇÃO (exige fonte) ----------------
+  var confirmOverlay = document.getElementById("confirmOverlay");
+
+  function truncate(s, n) {
+    var t = s || "(vazio)";
+    return t.length > n ? t.slice(0, n) + "…" : t;
+  }
+
+  function fileToBase64(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () { resolve(String(reader.result).split(",")[1] || ""); };
+      reader.onerror = function () { reject(new Error("file_read_error")); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function confirmModalHtml(changes) {
+    var rows = changes.map(function (c, i) {
+      return '<div class="changeRow">' +
+        '<div class="changeRow__meta"><b>' + escapeHtml(c.tema) + '</b> · ' + escapeHtml(c.colLabel) + '</div>' +
+        '<div class="changeRow__diff"><span class="old">' + escapeHtml(truncate(c.oldValue, 80)) + '</span> → <span class="new">' + escapeHtml(truncate(c.newValue, 80)) + '</span></div>' +
+        '<label class="changeRow__label">Fonte (link, ou anexe um PDF/imagem) *</label>' +
+        '<input type="text" class="changeSource" data-idx="' + i + '" placeholder="https://...">' +
+        '<input type="file" class="changeFile" data-idx="' + i + '" accept="application/pdf,image/png,image/jpeg,image/webp,image/gif">' +
+        '<span class="changeFile__status" data-idx="' + i + '"></span>' +
+      '</div>';
+    }).join("");
+    return '<div class="modalCard">' +
+      '<h3>Confirmar alterações</h3>' +
+      '<p>Cada alteração precisa de uma fonte (link, PDF ou imagem) para ficar registrada no histórico público da página.</p>' +
+      '<div class="changeList">' + rows + '</div>' +
+      '<label class="changeRow__label">Seu nome ou setor (opcional, vale para todas as alterações acima)</label>' +
+      '<input type="text" id="confirmEditorName" maxlength="80" placeholder="Ex.: João, Sindicato Regional SP">' +
+      '<div class="modalActions">' +
+        '<button type="button" id="btnConfirmSave">Confirmar e salvar</button>' +
+        '<button type="button" class="ghost" id="btnConfirmBack">Voltar a editar</button>' +
+        '<span class="status" id="confirmStatus"></span>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function openConfirmModal(changes) {
+    pendingChanges = changes;
+    confirmOverlay.innerHTML = confirmModalHtml(changes);
+    confirmOverlay.style.display = "flex";
+    wireConfirmModalEvents();
+  }
+
+  function closeConfirmModal() {
+    confirmOverlay.style.display = "none";
+    confirmOverlay.innerHTML = "";
+    pendingChanges = [];
+    pendingNewRows = null;
+  }
+
+  function wireConfirmModalEvents() {
+    document.getElementById("btnConfirmBack").addEventListener("click", function () {
+      closeConfirmModal();
+    });
+
+    document.querySelectorAll(".changeFile").forEach(function (input) {
+      input.addEventListener("change", function () {
+        var idx = Number(input.getAttribute("data-idx"));
+        var file = input.files && input.files[0];
+        if (!file) return;
+        var statusSpan = document.querySelector('.changeFile__status[data-idx="' + idx + '"]');
+        var sourceInput = document.querySelector('.changeSource[data-idx="' + idx + '"]');
+        if (file.size > 4 * 1024 * 1024) {
+          statusSpan.textContent = "Arquivo maior que 4MB — use um link em vez disso.";
+          input.value = "";
+          return;
+        }
+        statusSpan.textContent = "Enviando anexo…";
+        fileToBase64(file).then(function (base64) {
+          return fetch("/api/upload", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ filename: file.name, contentType: file.type, dataBase64: base64 })
+          });
+        }).then(function (r) {
+          if (!r.ok) return r.json().then(function (e) { throw new Error((e && e.error) || ("http_" + r.status)); });
+          return r.json();
+        }).then(function (data) {
+          sourceInput.value = data.url;
+          sourceInput.style.borderColor = "";
+          statusSpan.textContent = "Anexo enviado: " + file.name;
+        }).catch(function () {
+          statusSpan.textContent = "Não deu para enviar o anexo agora — tente um link.";
+        });
+      });
+    });
+
+    document.getElementById("btnConfirmSave").addEventListener("click", onConfirmSaveClick);
+  }
+
+  function onConfirmSaveClick() {
+    var confirmStatusEl = document.getElementById("confirmStatus");
+    var sourceInputs = document.querySelectorAll(".changeSource");
+    var missing = false;
+    sourceInputs.forEach(function (inp) {
+      if (!inp.value.trim()) {
+        inp.style.borderColor = "var(--pending-line)";
+        missing = true;
+      } else {
+        inp.style.borderColor = "";
+      }
+    });
+    if (missing) {
+      confirmStatusEl.textContent = "Preencha a fonte de todas as alterações antes de salvar.";
+      return;
+    }
+
+    var editorName = document.getElementById("confirmEditorName").value.trim();
+    sourceInputs.forEach(function (inp) {
+      var idx = Number(inp.getAttribute("data-idx"));
+      pendingChanges[idx].source = inp.value.trim();
+      pendingChanges[idx].editor = editorName || null;
+    });
+
+    var btn = document.getElementById("btnConfirmSave");
+    btn.disabled = true;
+    confirmStatusEl.textContent = "Salvando…";
+
+    fetch("/api/changelog", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ changes: pendingChanges })
+    }).then(function (r) {
+      if (!r.ok) return r.json().then(function (e) { throw new Error((e && e.error) || ("http_" + r.status)); });
+      return r.json();
+    }).then(function () {
+      return finishSave();
+    }).then(function () {
+      closeConfirmModal();
+      loadChangelog();
+    }).catch(function () {
+      btn.disabled = false;
+      confirmStatusEl.textContent = "Não deu para registrar a alteração agora. Tente de novo.";
+    });
+  }
+
+  // ---------------- HISTÓRICO DE ALTERAÇÕES ----------------
+  var changelogListEl = document.getElementById("changelogList");
+
+  function renderChangelog(list) {
+    if (!list || !list.length) {
+      changelogListEl.innerHTML = '<div class="changelogList__empty">Nenhuma alteração registrada ainda.</div>';
+      return;
+    }
+    changelogListEl.innerHTML = list.map(function (c) {
+      var when = "";
+      try {
+        when = new Date(c.at).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
+      } catch (e) {}
+      var who = c.editor ? escapeHtml(c.editor) : "Anônimo";
+      var isLink = /^https?:\/\//i.test(c.source || "");
+      var srcHtml = isLink
+        ? '<a href="' + escapeHtml(c.source) + '" target="_blank" rel="noopener noreferrer nofollow">Ver fonte</a>'
+        : escapeHtml(c.source || "");
+      return '<div class="changelogItem">' +
+        '<div class="meta">' + who + (when ? " · " + when : "") + ' · ' + escapeHtml(c.tema) + ' · ' + escapeHtml(c.colLabel) + '</div>' +
+        '<div class="diff"><span class="old">' + escapeHtml(truncate(c.oldValue, 100)) + '</span> → <span class="new">' + escapeHtml(truncate(c.newValue, 100)) + '</span></div>' +
+        '<div class="src">Fonte: ' + srcHtml + '</div>' +
+      '</div>';
+    }).join("");
+  }
+
+  function loadChangelog() {
+    fetch("/api/changelog", { cache: "no-store" }).then(function (r) {
+      if (!r.ok) throw new Error("http_" + r.status);
+      return r.json();
+    }).then(function (data) {
+      renderChangelog(data && data.changes);
+    }).catch(function () {
+      changelogListEl.innerHTML = '<div class="changelogList__empty">Não deu para carregar o histórico agora.</div>';
     });
   }
 
@@ -863,6 +1176,7 @@
   render();
   load();
   loadSuggestions();
+  loadChangelog();
 })();
 </script>
 </body>

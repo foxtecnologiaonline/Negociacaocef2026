@@ -5,10 +5,15 @@ de reivindicações dos empregados na Data-Base 2026.
 
 ## Como funciona
 
-- `index.html` — página estática (sem build), busca e salva dados via `/api/data` e `/api/suggestions`
+- `index.html` — página estática (sem build), busca e salva dados via `/api/data`, `/api/suggestions`,
+  `/api/changelog` e `/api/upload`
 - `api/data.js` — função serverless (Node) que lê/grava o comparativo (JSON) no Vercel Blob Storage
 - `api/suggestions.js` — função serverless que lê/grava as sugestões enviadas pelos visitantes
-- `lib/body.js` — leitura do corpo da requisição compartilhada pelas duas funções acima
+- `api/changelog.js` — função serverless que registra o histórico de alterações (o quê mudou, fonte
+  informada, quem editou e quando)
+- `api/upload.js` — função serverless que recebe um PDF/imagem anexado como fonte e grava no Blob
+  Storage, devolvendo o link público do arquivo
+- `lib/body.js` — leitura do corpo da requisição compartilhada pelas funções acima
 - `package.json` — dependência `@vercel/blob`
 
 ## Deploy no Vercel
@@ -18,6 +23,19 @@ de reivindicações dos empregados na Data-Base 2026.
    automaticamente a variável `BLOB_READ_WRITE_TOKEN`
 3. Pronto — qualquer pessoa com o link pode visualizar e, ao clicar em **"Editar página"**,
    alterar os campos e salvar para todo mundo.
+
+## Exigência de fonte e histórico de alterações
+
+Quem edita qualquer campo já existente na tabela (valor ou selo de indicador) e clica em **"Salvar
+alterações"** vê, antes de salvar, um resumo de tudo que mudou (tema, coluna, valor antigo → novo).
+Cada alteração exige uma fonte — um link, ou um arquivo (PDF ou imagem, até 4MB) anexado ali mesmo,
+que é enviado automaticamente e vira o link da fonte. Sem fonte preenchida em todas as alterações do
+lote, o botão de confirmar não salva nada. Um nome/setor de quem editou é opcional.
+
+Depois de confirmado, cada alteração vira uma entrada no **histórico de alterações**, visível
+publicamente na própria página (data/hora, quem editou, tema, coluna, valor antigo → novo e a fonte),
+antes de a tabela principal ser efetivamente atualizada — dando rastreabilidade completa de quem
+mudou o quê e com base em que fonte.
 
 ## Sugestões dos visitantes
 
