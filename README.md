@@ -6,13 +6,15 @@ de reivindicações dos empregados na Data-Base 2026.
 ## Como funciona
 
 - `index.html` — página estática (sem build), busca e salva dados via `/api/data`, `/api/suggestions`,
-  `/api/changelog` e `/api/upload`
+  `/api/changelog`, `/api/upload` e `/api/votes`
 - `api/data.js` — função serverless (Node) que lê/grava o comparativo (JSON) no Vercel Blob Storage
 - `api/suggestions.js` — função serverless que lê/grava as sugestões enviadas pelos visitantes
 - `api/changelog.js` — função serverless que registra o histórico de alterações (o quê mudou, fonte
   informada, quem editou e quando)
 - `api/upload.js` — função serverless que recebe um PDF/imagem anexado como fonte e grava no Blob
   Storage, devolvendo o link público do arquivo
+- `api/votes.js` — função serverless que lê/grava a contagem de votos (Aceitável/Insuficiente) por
+  tema, dados na 3ª Proposta / Final
 - `lib/body.js` — leitura do corpo da requisição compartilhada pelas funções acima
 - `package.json` — dependência `@vercel/blob`
 
@@ -54,3 +56,29 @@ preenchidos automaticamente os casos em que o próprio texto da proposta já afi
 (ex.: "Sem alteração" → Igual; percentuais diretamente comparáveis, como a contribuição da Caixa
 subindo de 6,5% para 8%/9%). Os demais ficam marcados como "Impacto a avaliar" até alguém revisar
 e preencher manualmente.
+
+A 3ª Proposta / Final tem um segundo selo, na mesma lógica, comparando-a com a pauta de
+**reivindicações** (não só com o ACT vigente). Esse segundo selo (campo `p3ir`) começa em branco
+("Impacto a avaliar") em todos os temas — é uma leitura de conteúdo que só quem acompanha a
+negociação deve preencher, em **"Editar página"**, para não presumir uma avaliação que não foi
+revisada.
+
+## Resumo visual da 3ª Proposta / Final
+
+Logo abaixo do topo da página, uma seção mostra os dois selos da 3ª Proposta / Final (vs. Hoje e
+vs. Reivindicação) de todos os temas em um só lugar, sem precisar rolar cada card — é a mesma
+informação dos selos dentro dos cards, só que reunida para dar uma visão geral rápida de onde a
+proposta final está ganhando ou ficando devendo.
+
+## Votação por tema (Aceitável / Insuficiente)
+
+Cada card tem uma enquete simples: qualquer visitante pode marcar se acha a 3ª Proposta / Final
+**aceitável** ou **insuficiente** para aquele tema específico. O resultado (contagem e percentual)
+aparece imediatamente no próprio card, numa barra de proporção, e é salvo em `/api/votes`
+(Vercel Blob, arquivo `comparativo-votes.json`).
+
+Cada navegador guarda o próprio voto no `localStorage` — dá pra trocar de opinião (o voto anterior
+é descontado e o novo é somado), mas não há login, então isso não impede um voto por pessoa em
+rigor (só evita o caso óbvio de clicar várias vezes sem querer). Não há servidor de tempo real
+(WebSocket/SSE) neste projeto estático: a página busca os votos ao carregar e depois a cada 20s, o
+que já é o suficiente para os relatórios acompanharem a votação "ao vivo" sem precisar recarregar.
