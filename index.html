@@ -301,6 +301,90 @@
   .delta--eq { background: #EDF0F5; color: var(--ink-soft); border: 1px solid var(--line); }
   .delta--neutral { background: transparent; color: var(--ink-soft); border: 1px dashed var(--line); font-style: italic; font-weight: 500; }
   .delta__text:empty::before { content: "Impacto a avaliar"; }
+  .deltaCaption { display: block; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-soft); margin: 6px 0 3px; }
+  .deltaCaption:first-child { margin-top: 0; }
+
+  /* ---------- RESUMO VISUAL: 3ª PROPOSTA vs. HOJE E vs. REIVINDICAÇÃO ---------- */
+  .summarySection {
+    max-width: 800px;
+    margin: 0 auto 8px;
+    padding: 0 20px;
+  }
+  .summarySection__card {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: 0 1px 4px rgba(0, 31, 92, 0.08);
+  }
+  .summarySection h2 { font-family: var(--serif); font-size: 17px; margin: 0 0 4px; color: var(--blue-800); }
+  .summarySection__card > p { margin: 0 0 14px; font-size: 13px; color: var(--ink-soft); }
+  .summaryGroup { margin-top: 16px; }
+  .summaryGroup:first-child { margin-top: 0; }
+  .summaryGroup h3 {
+    font-family: var(--serif);
+    font-size: 13px;
+    font-weight: 600;
+    margin: 0 0 8px;
+    color: var(--ink-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .summaryRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    padding: 9px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .summaryRow:last-child { border-bottom: none; }
+  .summaryRow__tema { font-size: 13.5px; color: var(--ink); flex: 1 1 150px; min-width: 130px; }
+  .summaryRow__badges { display: flex; gap: 16px; flex-wrap: wrap; }
+  .summaryBadge { display: flex; flex-direction: column; gap: 3px; align-items: flex-start; }
+  .summaryBadge__cap { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; color: var(--ink-soft); }
+  .summaryBadge .delta { margin: 0; }
+
+  /* ---------- VOTAÇÃO NOS CARDS (Aceitável / Insuficiente) ---------- */
+  .voteBox {
+    margin: 0 16px 14px;
+    padding: 12px;
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+  }
+  .voteBox__question { font-size: 12.5px; color: var(--ink-soft); margin: 0 0 8px; }
+  .voteBox__buttons { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+  .voteBtn {
+    flex: 1 1 auto;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    background: var(--paper-card);
+    color: var(--ink);
+  }
+  .voteBtn:hover { border-color: var(--ink-soft); }
+  .voteBtn--aceitavel.voteBtn--active { background: rgba(21, 138, 82, 0.10); border: 1px solid rgba(21, 138, 82, 0.35); color: #157F4D; }
+  .voteBtn--insuficiente.voteBtn--active { background: rgba(199, 43, 43, 0.10); border: 1px solid rgba(199, 43, 43, 0.35); color: #C72B2B; }
+  .voteBar {
+    height: 8px;
+    border-radius: 999px;
+    overflow: hidden;
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    margin-bottom: 6px;
+  }
+  .voteBar__fill {
+    height: 100%;
+    width: 0%;
+    background: #157F4D;
+    border-radius: 999px;
+    transition: width 0.3s ease;
+  }
+  .voteBox__counts { font-size: 11.5px; color: var(--ink-soft); }
 
   /* ---------- SUGESTÕES ---------- */
   .suggestSection {
@@ -343,7 +427,7 @@
     display: grid;
     gap: 10px;
   }
-  .suggestForm textarea, .suggestForm input {
+  .suggestForm textarea {
     width: 100%;
     font-family: var(--sans);
     font-size: 14px;
@@ -354,8 +438,8 @@
     padding: 10px 12px;
     resize: vertical;
   }
-  .suggestForm textarea::placeholder, .suggestForm input::placeholder { color: var(--ink-soft); }
-  .suggestForm textarea:focus, .suggestForm input:focus {
+  .suggestForm textarea::placeholder { color: var(--ink-soft); }
+  .suggestForm textarea:focus {
     outline: none;
     border-color: var(--orange);
     box-shadow: 0 0 0 2px rgba(243, 146, 0, 0.2);
@@ -405,7 +489,7 @@
   .changelogItem .src a { color: var(--blue-700); }
   .changelogList__empty { font-size: 13px; color: var(--ink-soft); font-style: italic; padding: 4px 2px; }
 
-  /* ---------- MODAL: CONFIRMAR ALTERAÇÕES (exige fonte) ---------- */
+  /* ---------- MODAL: CONFIRMAR ALTERAÇÕES (fonte opcional) ---------- */
   .modalOverlay {
     position: fixed;
     inset: 0;
@@ -440,7 +524,7 @@
   .changeRow__diff .old { color: var(--ink-soft); text-decoration: line-through; }
   .changeRow__diff .new { color: #157F4D; font-weight: 600; }
   .changeRow__label { display: block; font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; color: var(--ink-soft); margin-bottom: 4px; }
-  .changeSource, #confirmEditorName {
+  .changeSource {
     width: 100%;
     font-family: var(--sans);
     font-size: 14px;
@@ -451,8 +535,8 @@
     padding: 9px 11px;
     margin-bottom: 6px;
   }
-  .changeSource::placeholder, #confirmEditorName::placeholder { color: var(--ink-soft); }
-  .changeSource:focus, #confirmEditorName:focus {
+  .changeSource::placeholder { color: var(--ink-soft); }
+  .changeSource:focus {
     outline: none;
     border-color: var(--orange);
     box-shadow: 0 0 0 2px rgba(243, 146, 0, 0.2);
@@ -460,6 +544,12 @@
   .changeFile { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 4px; }
   .changeFile__status { display: block; font-size: 11.5px; color: var(--ink-soft); min-height: 14px; }
   .modalActions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+  /* .status por padrão é claro (pensado pra barra inferior, de fundo azul-escuro) —
+     aqui, dentro de superfícies brancas, precisa de tinta escura pra não sumir. */
+  .suggestForm__actions .status,
+  .modalActions .status { color: var(--ink-soft); }
+  .suggestForm__actions .status.ok,
+  .modalActions .status.ok { color: #157F4D; }
 
   /* ---------- LEGEND ---------- */
   .legend {
@@ -598,6 +688,14 @@
   </div>
 </div>
 
+<div class="summarySection" id="summarySection">
+  <h2>3ª Proposta / Final — resumo visual</h2>
+  <div class="summarySection__card">
+    <p>Onde a proposta final da Caixa está frente ao que já temos hoje e frente ao que a pauta de reivindicações pede, tema a tema.</p>
+    <div id="summaryTable"></div>
+  </div>
+</div>
+
 <div class="suggestSection" id="suggestSection">
   <div class="suggestSection__head">
     <div>
@@ -608,7 +706,6 @@
   </div>
   <form id="suggestForm" class="suggestForm" style="display:none;">
     <textarea id="suggestText" maxlength="1000" rows="3" placeholder="Descreva o ponto importante que deveria estar no comparativo..." required></textarea>
-    <input id="suggestName" type="text" maxlength="80" placeholder="Seu nome ou setor (opcional)">
     <div class="suggestForm__actions">
       <button type="submit" id="btnSuggestSend">Enviar sugestão</button>
       <button type="button" class="ghost" id="btnSuggestCancel">Cancelar</button>
@@ -622,7 +719,7 @@
 
 <div class="changelogSection" id="changelogSection">
   <h2>Histórico de alterações</h2>
-  <p>Toda edição feita na tabela acima fica registrada aqui, com a fonte informada por quem alterou.</p>
+  <p>Toda edição feita na tabela acima fica registrada aqui, com a fonte informada, quando enviada.</p>
   <div id="changelogList" class="changelogList"></div>
 </div>
 
@@ -651,84 +748,84 @@
         hoje:"4,64% (2024)\nINPC + 0,6% (2025)",
         p1:"", p1i:"",
         p2:"\"Salário reajustado\" (percentual não informado)", p2i:"",
-        p3:"INPC + 0,6%", p3i:"Igual ao ACT atual",
+        p3:"INPC + 0,6%", p3i:"Igual ao ACT atual", p3ir:"",
         reiv:"Não especificado nesta minuta (tema tratado na mesa CCT Fenaban)" },
 
       { id:"premio", grupo:"Dinheiro no bolso", tema:"Prêmio extraordinário (IEO)",
         hoje:"Não previsto",
         p1:"", p1i:"",
         p2:"R$ 3.000 por empregado", p2i:"",
-        p3:"R$ 3.000 por empregado (mantido)", p3i:"",
+        p3:"R$ 3.000 por empregado (mantido)", p3i:"", p3ir:"",
         reiv:"" },
 
       { id:"supercaixa", grupo:"Dinheiro no bolso", tema:"Super Caixa",
         hoje:"Regulamento próprio (fora do ACT)",
         p1:"", p1i:"",
         p2:"", p2i:"",
-        p3:"Dobro de premiação na habilitação inicial (50%) + regras simplificadas", p3i:"",
+        p3:"Dobro de premiação na habilitação inicial (50%) + regras simplificadas", p3i:"", p3ir:"",
         reiv:"Modelo \"vendeu, recebeu\": pagamento integral de comissões e premiações; veda redução por metas ou indicadores de satisfação" },
 
       { id:"plr", grupo:"Dinheiro no bolso", tema:"PLR 2026/2027",
         hoje:"Regras de 2024/2025",
         p1:"", p1i:"",
         p2:"", p2i:"",
-        p3:"Mantém regras e cálculo de 2024/2025", p3i:"Igual ao ACT atual",
+        p3:"Mantém regras e cálculo de 2024/2025", p3i:"Igual ao ACT atual", p3ir:"",
         reiv:"PLR Social adicional: 6% do lucro líquido, linear, sem teto; elimina limitador de 3 salários" },
 
       { id:"merito", grupo:"Dinheiro no bolso", tema:"Promoção por mérito",
         hoje:"Anual, ano-base anterior, pago em janeiro",
         p1:"", p1i:"",
         p2:"", p2i:"",
-        p3:"Critérios de autocuidado + resultado; retira metas coletivas", p3i:"",
+        p3:"Critérios de autocuidado + resultado; retira metas coletivas", p3i:"", p3ir:"",
         reiv:"Mantém sistemática atual (anual, ano-base anterior, pago em janeiro)" },
 
       { id:"contribuicao", grupo:"Saúde Caixa", tema:"Contribuição da CAIXA",
         hoje:"Até 6,5% da folha",
         p1:"Aumento da participação dos beneficiários (percentual não detalhado)", p1i:"",
         p2:"Sobe para 8% (a partir de 2027)", p2i:"Melhorou +23% (6,5% → 8%)",
-        p3:"Sobe para 9% (a partir de 2027)", p3i:"Melhorou +38% (6,5% → 9%)",
+        p3:"Sobe para 9% (a partir de 2027)", p3i:"Melhorou +38% (6,5% → 9%)", p3ir:"",
         reiv:"Fim do teto; proporção 70% Caixa / 30% empregado" },
 
       { id:"idade", grupo:"Saúde Caixa", tema:"Cobrança por faixa etária",
         hoje:"Sem cobrança diferenciada",
         p1:"Previa cobrança por faixa etária", p1i:"",
         p2:"Nova tabela, ainda por faixa etária (percentuais reduzidos)", p2i:"",
-        p3:"Retira cobrança por faixa etária", p3i:"",
+        p3:"Retira cobrança por faixa etária", p3i:"", p3ir:"",
         reiv:"Mantém modelo solidário (pacto intergeracional)" },
 
       { id:"jornada", grupo:"Rotina & direitos", tema:"Jornada de trabalho",
         hoje:"6h/dia (30h/semana); 8h com função gratificada",
         p1:"", p1i:"",
         p2:"", p2i:"",
-        p3:"Sem alteração", p3i:"Igual ao ACT atual",
+        p3:"Sem alteração", p3i:"Igual ao ACT atual", p3ir:"",
         reiv:"5h/dia, 4 dias por semana (20h semanais)" },
 
       { id:"indenizacao", grupo:"Rotina & direitos", tema:"Indenização assalto/sinistro",
         hoje:"R$ 266.020,28",
         p1:"", p1i:"",
         p2:"", p2i:"",
-        p3:"Sem alteração", p3i:"Igual ao ACT atual",
+        p3:"Sem alteração", p3i:"Igual ao ACT atual", p3ir:"",
         reiv:"R$ 1.000.000,00" },
 
       { id:"maternidade", grupo:"Rotina & direitos", tema:"Licença maternidade",
         hoje:"180 dias (incl. 30 de aleitamento)",
         p1:"", p1i:"",
         p2:"", p2i:"",
-        p3:"Sem alteração", p3i:"Igual ao ACT atual",
+        p3:"Sem alteração", p3i:"Igual ao ACT atual", p3ir:"",
         reiv:"180 dias + aleitamento até os 2 anos" },
 
       { id:"remoto", grupo:"Rotina & direitos", tema:"Atendimento remoto Fígital/Genesys",
         hoje:"Regras vigentes",
         p1:"", p1i:"",
         p2:"", p2i:"",
-        p3:"Prazo de início ajustado de 5 para 10 min (até 12/2026)", p3i:"",
+        p3:"Prazo de início ajustado de 5 para 10 min (até 12/2026)", p3i:"", p3ir:"",
         reiv:"" },
 
       { id:"transporte", grupo:"Rotina & direitos", tema:"Vale-transporte",
         hoje:"Empregado paga o que exceder 4% do salário",
         p1:"", p1i:"",
         p2:"", p2i:"",
-        p3:"Sem alteração", p3i:"Igual ao ACT atual",
+        p3:"Sem alteração", p3i:"Igual ao ACT atual", p3ir:"",
         reiv:"Custeio 100% Caixa, sem custo ao empregado" },
     ]
   };
@@ -737,7 +834,7 @@
     { key:"hoje", label:"Como está hoje", cls:"field--hoje" },
     { key:"p1",   label:"1ª Proposta",     cls:"field--p1", indKey:"p1i" },
     { key:"p2",   label:"2ª Proposta",     cls:"field--p2", indKey:"p2i" },
-    { key:"p3",   label:"3ª Proposta / Final", cls:"field--p3", indKey:"p3i" },
+    { key:"p3",   label:"3ª Proposta / Final", cls:"field--p3", indKey:"p3i", indKey2:"p3ir" },
     { key:"reiv", label:"Reivindicação",   cls:"field--reiv" },
   ];
 
@@ -746,7 +843,8 @@
   var TRACKED_FIELDS = [];
   COLS.forEach(function (c) {
     TRACKED_FIELDS.push({ key: c.key, label: c.label });
-    if (c.indKey) TRACKED_FIELDS.push({ key: c.indKey, label: c.label + " — indicador" });
+    if (c.indKey) TRACKED_FIELDS.push({ key: c.indKey, label: c.label + " — indicador vs. hoje" });
+    if (c.indKey2) TRACKED_FIELDS.push({ key: c.indKey2, label: c.label + " — indicador vs. reivindicação" });
   });
 
   // ---------------- STATE ----------------
@@ -785,8 +883,11 @@
       return '<h2 class="group-title" id="g-' + slug(g.grupo) + '">' + escapeHtml(g.grupo) + '</h2>' + cards;
     }).join("") + legendHtml();
 
+    document.getElementById("summaryTable").innerHTML = summaryHtml(groups);
+
     document.body.classList.toggle("editing", editing);
     bindEditableHandlers();
+    renderAllVoteBoxes();
   }
 
   function slug(s) {
@@ -808,31 +909,66 @@
     return "";
   }
 
+  function deltaBadgeHtml(rowId, indKey, ind, caption) {
+    var cls = deltaClass(ind);
+    var icon = badgeIcon(cls);
+    return (caption ? '<span class="deltaCaption">' + caption + '</span>' : "") +
+      '<span class="delta ' + cls + '">' +
+      (icon ? '<i class="delta__icon">' + icon + '</i>' : "") +
+      '<span class="delta__text" data-row="' + rowId + '" data-col="' + indKey + '" contenteditable="false">' + escapeHtml(ind) + '</span>' +
+    '</span>';
+  }
+
   function cardHtml(row) {
     var fields = COLS.map(function (c) {
       var val = row[c.key] || "";
       var pending = !val.trim();
-      var badge = "";
+      var badges = "";
       if (c.indKey) {
         var ind = row[c.indKey] || "";
         if (val.trim() || ind.trim()) {
-          var cls = deltaClass(ind);
-          var icon = badgeIcon(cls);
-          badge = '<span class="delta ' + cls + '">' +
-            (icon ? '<i class="delta__icon">' + icon + '</i>' : "") +
-            '<span class="delta__text" data-row="' + row.id + '" data-col="' + c.indKey + '" contenteditable="false">' + escapeHtml(ind) + '</span>' +
-          '</span>';
+          badges += deltaBadgeHtml(row.id, c.indKey, ind, c.indKey2 ? "Frente ao ACT atual" : "");
+        }
+      }
+      if (c.indKey2) {
+        var ind2 = row[c.indKey2] || "";
+        if (val.trim() || ind2.trim()) {
+          badges += deltaBadgeHtml(row.id, c.indKey2, ind2, "Frente à reivindicação");
         }
       }
       return '<div class="field ' + c.cls + (pending ? " pending" : "") + '">' +
         '<dt>' + c.label + '</dt>' +
         '<div class="fieldValue">' +
-          badge +
+          badges +
           '<dd data-row="' + row.id + '" data-col="' + c.key + '" contenteditable="false">' + escapeHtml(val) + '</dd>' +
         '</div>' +
       '</div>';
     }).join("");
-    return '<article class="card"><h3>' + escapeHtml(row.tema) + '</h3><dl style="margin:0;">' + fields + '</dl></article>';
+    return '<article class="card"><h3>' + escapeHtml(row.tema) + '</h3><dl style="margin:0;">' + fields + '</dl>' + voteBoxHtml(row) + '</article>';
+  }
+
+  function summaryHtml(groups) {
+    return groups.map(function (g) {
+      var rows = g.items.map(function (r) {
+        return '<div class="summaryRow">' +
+          '<div class="summaryRow__tema">' + escapeHtml(r.tema) + '</div>' +
+          '<div class="summaryRow__badges">' +
+            summaryBadgeHtml(r.p3i, "vs. Hoje") +
+            summaryBadgeHtml(r.p3ir, "vs. Reivindicação") +
+          '</div>' +
+        '</div>';
+      }).join("");
+      return '<div class="summaryGroup"><h3>' + escapeHtml(g.grupo) + '</h3>' + rows + '</div>';
+    }).join("");
+  }
+
+  function summaryBadgeHtml(text, caption) {
+    var cls = deltaClass(text || "");
+    var icon = badgeIcon(cls);
+    return '<span class="summaryBadge">' +
+      '<span class="summaryBadge__cap">' + caption + '</span>' +
+      '<span class="delta ' + cls + '">' + (icon ? '<i class="delta__icon">' + icon + '</i>' : "") + '<span class="delta__text">' + escapeHtml(text || "") + '</span></span>' +
+    '</span>';
   }
 
   function legendHtml() {
@@ -916,7 +1052,7 @@
 
   // Compara o estado salvo com o que está no DOM e retorna só os campos que
   // mudaram de fato — cada um vira uma linha no modal de confirmação, que
-  // exige uma fonte antes de deixar salvar.
+  // incentiva (sem exigir) informar uma fonte antes de salvar.
   function diffRows(oldRows, newRows) {
     var changes = [];
     newRows.forEach(function (newRow) {
@@ -999,7 +1135,7 @@
     });
   }
 
-  // ---------------- CONFIRMAR ALTERAÇÃO (exige fonte) ----------------
+  // ---------------- CONFIRMAR ALTERAÇÃO (fonte opcional) ----------------
   var confirmOverlay = document.getElementById("confirmOverlay");
 
   function truncate(s, n) {
@@ -1021,7 +1157,7 @@
       return '<div class="changeRow">' +
         '<div class="changeRow__meta"><b>' + escapeHtml(c.tema) + '</b> · ' + escapeHtml(c.colLabel) + '</div>' +
         '<div class="changeRow__diff"><span class="old">' + escapeHtml(truncate(c.oldValue, 80)) + '</span> → <span class="new">' + escapeHtml(truncate(c.newValue, 80)) + '</span></div>' +
-        '<label class="changeRow__label">Fonte (link, ou anexe um PDF/imagem) *</label>' +
+        '<label class="changeRow__label">Fonte (link, ou anexe um PDF/imagem)</label>' +
         '<input type="text" class="changeSource" data-idx="' + i + '" placeholder="https://...">' +
         '<input type="file" class="changeFile" data-idx="' + i + '" accept="application/pdf,image/png,image/jpeg,image/webp,image/gif">' +
         '<span class="changeFile__status" data-idx="' + i + '"></span>' +
@@ -1029,10 +1165,8 @@
     }).join("");
     return '<div class="modalCard">' +
       '<h3>Confirmar alterações</h3>' +
-      '<p>Cada alteração precisa de uma fonte (link, PDF ou imagem) para ficar registrada no histórico público da página.</p>' +
+      '<p>Envie a fonte para ampliarmos a biblioteca de informações — não é obrigatório, mas ajuda muito.</p>' +
       '<div class="changeList">' + rows + '</div>' +
-      '<label class="changeRow__label">Seu nome ou setor (opcional, vale para todas as alterações acima)</label>' +
-      '<input type="text" id="confirmEditorName" maxlength="80" placeholder="Ex.: João, Sindicato Regional SP">' +
       '<div class="modalActions">' +
         '<button type="button" id="btnConfirmSave">Confirmar e salvar</button>' +
         '<button type="button" class="ghost" id="btnConfirmBack">Voltar a editar</button>' +
@@ -1097,25 +1231,9 @@
   function onConfirmSaveClick() {
     var confirmStatusEl = document.getElementById("confirmStatus");
     var sourceInputs = document.querySelectorAll(".changeSource");
-    var missing = false;
-    sourceInputs.forEach(function (inp) {
-      if (!inp.value.trim()) {
-        inp.style.borderColor = "var(--pending-line)";
-        missing = true;
-      } else {
-        inp.style.borderColor = "";
-      }
-    });
-    if (missing) {
-      confirmStatusEl.textContent = "Preencha a fonte de todas as alterações antes de salvar.";
-      return;
-    }
-
-    var editorName = document.getElementById("confirmEditorName").value.trim();
     sourceInputs.forEach(function (inp) {
       var idx = Number(inp.getAttribute("data-idx"));
       pendingChanges[idx].source = inp.value.trim();
-      pendingChanges[idx].editor = editorName || null;
     });
 
     var btn = document.getElementById("btnConfirmSave");
@@ -1158,7 +1276,7 @@
       var isLink = /^https?:\/\//i.test(c.source || "");
       var srcHtml = isLink
         ? '<a href="' + escapeHtml(c.source) + '" target="_blank" rel="noopener noreferrer nofollow">Ver fonte</a>'
-        : escapeHtml(c.source || "");
+        : escapeHtml(c.source || "não informada");
       return '<div class="changelogItem">' +
         '<div class="meta">' + who + (when ? " · " + when : "") + ' · ' + escapeHtml(c.tema) + ' · ' + escapeHtml(c.colLabel) + '</div>' +
         '<div class="diff"><span class="old">' + escapeHtml(truncate(c.oldValue, 100)) + '</span> → <span class="new">' + escapeHtml(truncate(c.newValue, 100)) + '</span></div>' +
@@ -1184,7 +1302,6 @@
   var btnSuggestCancel = document.getElementById("btnSuggestCancel");
   var btnSuggestSend = document.getElementById("btnSuggestSend");
   var suggestText = document.getElementById("suggestText");
-  var suggestName = document.getElementById("suggestName");
   var suggestStatusEl = document.getElementById("suggestStatus");
   var suggestListEl = document.getElementById("suggestList");
 
@@ -1240,7 +1357,7 @@
     fetch("/api/suggestions", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: text, name: suggestName.value.trim() })
+      body: JSON.stringify({ text: text })
     }).then(function (r) {
       if (!r.ok) return r.json().then(function (e) { throw new Error((e && e.error) || ("http_" + r.status)); });
       return r.json();
@@ -1257,11 +1374,104 @@
     });
   });
 
+  // ---------------- VOTAÇÃO (Aceitável / Insuficiente) ----------------
+  var VOTES = {};
+
+  function voteBoxHtml(row) {
+    return '<div class="voteBox" data-vote-row="' + row.id + '">' +
+      '<p class="voteBox__question">A 3ª Proposta / Final é aceitável para este tema?</p>' +
+      '<div class="voteBox__buttons">' +
+        '<button type="button" class="voteBtn voteBtn--aceitavel" data-choice="aceitavel">✓ Aceitável</button>' +
+        '<button type="button" class="voteBtn voteBtn--insuficiente" data-choice="insuficiente">✕ Insuficiente</button>' +
+      '</div>' +
+      '<div class="voteBar"><span class="voteBar__fill"></span></div>' +
+      '<div class="voteBox__counts">Carregando votos…</div>' +
+    '</div>';
+  }
+
+  function myVoteKey(rowId) { return "voto:" + rowId; }
+  function getMyVote(rowId) {
+    try { return localStorage.getItem(myVoteKey(rowId)) || ""; } catch (e) { return ""; }
+  }
+  function setMyVote(rowId, choice) {
+    try { localStorage.setItem(myVoteKey(rowId), choice); } catch (e) {}
+  }
+
+  function renderVoteBox(rowId) {
+    var box = document.querySelector('.voteBox[data-vote-row="' + rowId + '"]');
+    if (!box) return;
+    var tally = VOTES[rowId] || { aceitavel: 0, insuficiente: 0 };
+    var total = (tally.aceitavel || 0) + (tally.insuficiente || 0);
+    var pctAceitavel = total ? Math.round((tally.aceitavel / total) * 100) : 0;
+    box.querySelector(".voteBar__fill").style.width = pctAceitavel + "%";
+    box.querySelector(".voteBox__counts").textContent = total
+      ? ("Aceitável " + pctAceitavel + "% (" + tally.aceitavel + ") · Insuficiente " + (100 - pctAceitavel) + "% (" + tally.insuficiente + ") · " + total + " voto" + (total === 1 ? "" : "s"))
+      : "Ainda sem votos — seja o primeiro.";
+    var mine = getMyVote(rowId);
+    box.querySelectorAll(".voteBtn").forEach(function (btn) {
+      btn.classList.toggle("voteBtn--active", btn.getAttribute("data-choice") === mine);
+    });
+  }
+
+  function renderAllVoteBoxes() {
+    document.querySelectorAll(".voteBox").forEach(function (box) {
+      renderVoteBox(box.getAttribute("data-vote-row"));
+    });
+  }
+
+  function loadVotes() {
+    return fetch("/api/votes", { cache: "no-store" }).then(function (r) {
+      if (!r.ok) throw new Error("http_" + r.status);
+      return r.json();
+    }).then(function (data) {
+      VOTES = (data && data.votes) || {};
+      renderAllVoteBoxes();
+    }).catch(function () {
+      // silencioso — mantém os contadores como estavam
+    });
+  }
+
+  document.getElementById("main").addEventListener("click", function (ev) {
+    var btn = ev.target.closest(".voteBtn");
+    if (!btn) return;
+    var box = btn.closest(".voteBox");
+    var rowId = box.getAttribute("data-vote-row");
+    var choice = btn.getAttribute("data-choice");
+    var previousChoice = getMyVote(rowId);
+    if (previousChoice === choice) return;
+
+    // Atualização otimista: reflete o voto na hora, sem esperar o servidor.
+    var tally = VOTES[rowId] || { aceitavel: 0, insuficiente: 0 };
+    if (previousChoice && tally[previousChoice] > 0) tally[previousChoice] -= 1;
+    tally[choice] = (tally[choice] || 0) + 1;
+    VOTES[rowId] = tally;
+    setMyVote(rowId, choice);
+    renderVoteBox(rowId);
+
+    fetch("/api/votes", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ rowId: rowId, choice: choice, previousChoice: previousChoice })
+    }).then(function (r) {
+      if (!r.ok) return r.json().then(function (e) { throw new Error((e && e.error) || ("http_" + r.status)); });
+      return r.json();
+    }).then(function (data) {
+      if (data && data.votes) { VOTES = data.votes; renderAllVoteBoxes(); }
+    }).catch(function () {
+      // mantém o estado otimista mesmo se a confirmação do servidor falhar
+    });
+  });
+
+  // Sem infraestrutura de push (websocket/SSE) neste projeto estático — o poll
+  // periódico é a forma mais simples de aproximar "tempo real" nos relatórios.
+  setInterval(loadVotes, 20000);
+
   // ---------------- INIT ----------------
   render();
   load();
   loadSuggestions();
   loadChangelog();
+  loadVotes();
 })();
 </script>
 <script defer src="/_vercel/insights/script.js"></script>

@@ -54,10 +54,6 @@ module.exports = async (req, res) => {
         const source = c && typeof c.source === 'string' ? c.source.trim() : '';
         const rowId = c && typeof c.rowId === 'string' ? c.rowId : '';
         const col = c && typeof c.col === 'string' ? c.col : '';
-        if (!source) {
-          res.status(400).json({ ok: false, error: 'invalid_payload: toda alteração precisa de uma "source" (fonte)' });
-          return;
-        }
         if (!rowId || !col) {
           res.status(400).json({ ok: false, error: 'invalid_payload: "rowId" e "col" são obrigatórios em cada alteração' });
           return;
