@@ -128,10 +128,8 @@
     color: var(--ink);
   }
   .stat span { font-size: 12.5px; color: var(--ink-soft); }
-  .stat.pending b { color: var(--pending); }
   .stat { border-top: 3px solid var(--c-p1); }
-  .stat:nth-child(2) { border-top-color: var(--pending-line); }
-  .stat:nth-child(3) { border-top-color: var(--orange); }
+  .stat:nth-child(2) { border-top-color: var(--orange); }
 
   /* ---------- NAV ---------- */
   .nav {
@@ -348,7 +346,6 @@
   <p>Comparativo tema a tema entre o acordo vigente, as três propostas apresentadas pela Caixa e a pauta de reivindicações dos empregados.</p>
   <div class="stats">
     <div class="stat"><b id="statTemas">–</b><span>temas mapeados</span></div>
-    <div class="stat pending"><b id="statPend">–</b><span>lacunas sem resposta da Caixa</span></div>
     <div class="stat"><b id="statAt">–</b><span>última atualização</span></div>
   </div>
 </div>
@@ -472,14 +469,6 @@
   var DATA = SEED;
   var editing = false;
 
-  function countPending(rows) {
-    var n = 0;
-    rows.forEach(function (r) {
-      ["p1", "p2"].forEach(function (k) { if (!r[k] || !r[k].trim()) n++; });
-    });
-    return n;
-  }
-
   function groupRows(rows) {
     var order = [], map = {};
     rows.forEach(function (r) {
@@ -498,7 +487,6 @@
     var groups = groupRows(DATA.rows);
 
     document.getElementById("statTemas").textContent = DATA.rows.length;
-    document.getElementById("statPend").textContent = countPending(DATA.rows);
     document.getElementById("statAt").textContent = DATA.updatedAt;
 
     var nav = document.getElementById("navRow");
