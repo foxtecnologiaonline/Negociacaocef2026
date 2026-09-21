@@ -4,30 +4,46 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Comparativo da Negociação CAIXA 2026</title>
+<meta name="description" content="Comparativo tema a tema entre o Acordo Coletivo vigente, as três propostas apresentadas pela Caixa e a pauta de reivindicações dos empregados na Data-Base 2026.">
+<meta name="theme-color" content="#0F3F91">
+<meta property="og:title" content="Comparativo da Negociação CAIXA 2026">
+<meta property="og:description" content="Mapa da Negociação 2026. Comparativo tema a tema do ACT, das propostas da Caixa e da pauta de reivindicações.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230F3F91'/%3E%3Crect x='0' y='50' width='64' height='6' fill='%23FF7A1A'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #0B2E6B;
-    --ink-soft: #4A5D82;
-    --paper: #EEF2F8;
-    --paper-card: #FFFFFF;
-    --line: #D3DCEA;
-    --orange: #E4671B;
-    --orange-soft: #FBE3D0;
-    --orange-line: #C6551A;
-    --pending: #E8B923;
-    --pending-soft: #FBF0CE;
-    --pending-line: #B5860F;
+    /* ---- Paleta inspirada na identidade da Caixa: azul royal, branco e laranja ---- */
+    --blue-900: #051B3F;
+    --blue-800: #0A2A63;
+    --blue-700: #0F3F91;
+    --blue-600: #1B57C4;
+    --blue-400: #6FA8F5;
 
-    --c-hoje: #5B6B85;      --c-hoje-bg: #E7EAF1;
-    --c-p1:   #2E74B5;      --c-p1-bg:   #DCEAF7;
-    --c-p2:   #1B4F91;      --c-p2-bg:   #D2E0F1;
-    --c-p3:   #0B2E6B;      --c-p3-bg:   #D9E2F0;
-    --c-reiv: #E4671B;      --c-reiv-bg: #FBE3D0;
+    --ink: #FFFFFF;
+    --ink-soft: #BAD0F5;
 
-    --radius: 4px;
+    --paper: var(--blue-900);
+    --paper-card: #0D2D6B;
+    --line: rgba(255, 255, 255, 0.16);
+
+    --orange: #FF7A1A;
+    --orange-soft: rgba(255, 122, 26, 0.18);
+    --orange-line: #E4671B;
+
+    --pending: #FFD166;
+    --pending-soft: rgba(255, 178, 56, 0.16);
+    --pending-line: #FFB238;
+
+    --c-hoje: #8B98B8;      --c-hoje-bg: rgba(139, 152, 184, 0.14);
+    --c-p1:   #4A90F0;      --c-p1-bg:   rgba(74, 144, 240, 0.16);
+    --c-p2:   #1E4FB5;      --c-p2-bg:   rgba(80, 130, 224, 0.18);
+    --c-p3:   #D7E6FF;      --c-p3-bg:   rgba(215, 230, 255, 0.14);
+    --c-reiv: #FF9A3D;      --c-reiv-bg: rgba(255, 122, 26, 0.16);
+
+    --radius: 10px;
     --serif: "Source Serif 4", Georgia, "Times New Roman", serif;
     --sans: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
@@ -37,31 +53,10 @@
   }
   html { scroll-padding-top: 78px; }
 
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --ink: #DCE6F7; --ink-soft: #9FB1D1;
-      --paper: #0B1220; --paper-card: #121B2E; --line: #253352;
-      --orange: #F0813A; --orange-soft: #3A2412; --orange-line: #C6551A;
-      --pending: #F0C64C; --pending-soft: #362B0C; --pending-line: #B5860F;
-      --c-hoje-bg: #1A2436; --c-p1-bg: #16273D; --c-p2-bg: #142543;
-      --c-p3-bg: #17224A; --c-reiv-bg: #3A2412;
-      --c-p1: #5C9BD8; --c-p2: #6D9BDB; --c-p3: #8CA9E0; --c-reiv: #F0813A;
-    }
-  }
-  :root[data-theme="dark"] {
-    --ink: #DCE6F7; --ink-soft: #9FB1D1;
-    --paper: #0B1220; --paper-card: #121B2E; --line: #253352;
-    --orange: #F0813A; --orange-soft: #3A2412; --orange-line: #C6551A;
-    --pending: #F0C64C; --pending-soft: #362B0C; --pending-line: #B5860F;
-    --c-hoje-bg: #1A2436; --c-p1-bg: #16273D; --c-p2-bg: #142543;
-    --c-p3-bg: #17224A; --c-reiv-bg: #3A2412;
-    --c-p1: #5C9BD8; --c-p2: #6D9BDB; --c-p3: #8CA9E0; --c-reiv: #F0813A;
-  }
-
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    background: var(--paper);
+    background: linear-gradient(180deg, var(--blue-900) 0%, #08234F 420px, var(--blue-900) 900px);
     color: var(--ink);
     font-family: var(--sans);
     line-height: 1.5;
@@ -78,8 +73,10 @@
   .hero__kicker {
     font-family: var(--sans);
     font-size: 13px;
-    font-weight: 600;
-    color: var(--orange-line);
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--orange);
     margin: 0 0 10px;
   }
   .hero h1 {
@@ -91,6 +88,7 @@
     letter-spacing: -0.01em;
     position: relative;
     padding-bottom: 16px;
+    color: var(--ink);
   }
   .hero h1::after {
     content: "";
@@ -119,6 +117,7 @@
     border-radius: var(--radius);
     padding: 10px 14px;
     min-width: 128px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.18);
   }
   .stat b {
     display: block;
@@ -126,21 +125,22 @@
     font-size: 22px;
     line-height: 1;
     margin-bottom: 3px;
+    color: var(--ink);
   }
   .stat span { font-size: 12.5px; color: var(--ink-soft); }
-  .stat.pending b { color: var(--pending-line); }
-  .stat { border-top: 3px solid var(--c-hoje); }
-  .stat:nth-child(2) { border-top-color: var(--pending-line); }
-  .stat:nth-child(3) { border-top-color: var(--orange); }
+  .stat { border-top: 3px solid var(--c-p1); }
+  .stat:nth-child(2) { border-top-color: var(--orange); }
 
   /* ---------- NAV ---------- */
   .nav {
     position: sticky;
     top: 0;
     z-index: 5;
-    background: var(--ink);
+    background: var(--blue-700);
+    border-bottom: 3px solid var(--orange);
     padding: 10px 0;
     padding-top: calc(10px + env(safe-area-inset-top, 0px));
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
   }
   .nav__row {
     max-width: 760px;
@@ -156,15 +156,15 @@
     flex: none;
     text-decoration: none;
     font-size: 13.5px;
-    font-weight: 500;
-    color: #EAF0FB;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.18);
+    font-weight: 600;
+    color: #FFFFFF;
+    background: rgba(255, 255, 255, 0.10);
+    border: 1px solid rgba(255, 255, 255, 0.22);
     padding: 7px 13px;
     border-radius: 999px;
     white-space: nowrap;
   }
-  .nav a:hover { border-color: var(--orange); color: #fff; }
+  .nav a:hover { border-color: var(--orange); background: rgba(255, 122, 26, 0.18); color: #fff; }
 
   /* ---------- MAIN ---------- */
   main {
@@ -178,6 +178,9 @@
     font-size: 22px;
     margin: 40px 0 16px;
     padding-top: 6px;
+    color: var(--ink);
+    border-left: 4px solid var(--orange);
+    padding-left: 12px;
   }
   .group-title:first-child { margin-top: 6px; }
 
@@ -187,6 +190,7 @@
     border-radius: var(--radius);
     margin-bottom: 16px;
     overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   }
   .card h3 {
     font-family: var(--serif);
@@ -195,6 +199,7 @@
     margin: 0;
     padding: 14px 16px 12px;
     border-bottom: 1px solid var(--line);
+    color: var(--ink);
   }
   .field {
     display: grid;
@@ -207,7 +212,7 @@
   .field:last-child { border-bottom: none; }
   .field dt {
     font-size: 11.5px;
-    font-weight: 600;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.03em;
     color: var(--ink-soft);
@@ -216,6 +221,7 @@
   .field dd {
     margin: 0;
     font-size: 14.5px;
+    color: var(--ink);
     white-space: pre-line;
     outline: none;
   }
@@ -236,13 +242,191 @@
   .field.pending dd:empty::before {
     content: "Sem informação — toque para preencher";
   }
-  body.editing .field dd {
+  body.editing [data-row][data-col] {
     cursor: text;
     border-radius: 3px;
     box-shadow: 0 0 0 1px transparent;
   }
-  body.editing .field dd:hover { box-shadow: 0 0 0 1px var(--ink-soft); }
-  body.editing .field dd:focus { box-shadow: 0 0 0 2px var(--ink); background: color-mix(in srgb, var(--paper-card) 60%, white); }
+  body.editing [data-row][data-col]:hover { box-shadow: 0 0 0 1px var(--ink-soft); background: rgba(255, 255, 255, 0.06); }
+  body.editing [data-row][data-col]:focus { box-shadow: 0 0 0 2px var(--orange); background: rgba(255, 255, 255, 0.10); color: var(--ink); }
+
+  /* ---------- INDICADOR DE MELHORA/PIORA (vs. ACT atual) ---------- */
+  .delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin: 0 0 6px;
+    letter-spacing: 0.01em;
+  }
+  .delta__icon { font-size: 10px; line-height: 1; }
+  .delta__text { border-radius: 999px; outline: none; }
+  .delta--up { background: rgba(52, 199, 130, 0.16); color: #7CE3A8; border: 1px solid rgba(52, 199, 130, 0.4); }
+  .delta--down { background: rgba(255, 92, 92, 0.16); color: #FF9E9E; border: 1px solid rgba(255, 92, 92, 0.42); }
+  .delta--eq { background: rgba(255, 255, 255, 0.08); color: var(--ink-soft); border: 1px solid var(--line); }
+  .delta--neutral { background: transparent; color: var(--ink-soft); border: 1px dashed var(--line); font-style: italic; font-weight: 500; }
+  .delta__text:empty::before { content: "Impacto a avaliar"; }
+
+  /* ---------- SUGESTÕES ---------- */
+  .suggestSection {
+    max-width: 760px;
+    margin: 0 auto 8px;
+    padding: 0 20px;
+  }
+  .suggestSection__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+  .suggestSection__head h2 {
+    font-family: var(--serif);
+    font-size: 17px;
+    margin: 0 0 4px;
+    color: var(--ink);
+  }
+  .suggestSection__head p { margin: 0; font-size: 13px; color: var(--ink-soft); }
+  button.ghost-cta {
+    background: transparent;
+    color: var(--orange);
+    border: 1px solid var(--orange);
+    flex: none;
+  }
+  button.ghost-cta:hover { background: var(--orange-soft); }
+  .suggestForm {
+    margin-top: 10px;
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 16px;
+    display: grid;
+    gap: 10px;
+  }
+  .suggestForm textarea, .suggestForm input {
+    width: 100%;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 10px 12px;
+    resize: vertical;
+  }
+  .suggestForm textarea::placeholder, .suggestForm input::placeholder { color: var(--ink-soft); }
+  .suggestForm textarea:focus, .suggestForm input:focus {
+    outline: none;
+    border-color: var(--orange);
+    box-shadow: 0 0 0 2px rgba(255, 122, 26, 0.25);
+  }
+  .suggestForm__actions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .suggestList { margin-top: 12px; display: grid; gap: 8px; }
+  .suggestItem {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--orange);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13.5px;
+  }
+  .suggestItem p { margin: 0 0 4px; white-space: pre-line; color: var(--ink); }
+  .suggestItem .meta { font-size: 11.5px; color: var(--ink-soft); }
+  .suggestList__empty { font-size: 13px; color: var(--ink-soft); font-style: italic; padding: 4px 2px; }
+
+  /* ---------- HISTÓRICO DE ALTERAÇÕES ---------- */
+  .changelogSection {
+    max-width: 760px;
+    margin: 0 auto 8px;
+    padding: 0 20px;
+  }
+  .changelogSection > h2 {
+    font-family: var(--serif);
+    font-size: 17px;
+    margin: 0 0 4px;
+    color: var(--ink);
+  }
+  .changelogSection > p { margin: 0 0 10px; font-size: 13px; color: var(--ink-soft); }
+  .changelogList { display: grid; gap: 8px; }
+  .changelogItem {
+    background: var(--paper-card);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--c-p1);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  .changelogItem .meta { font-size: 11.5px; color: var(--ink-soft); margin-bottom: 4px; }
+  .changelogItem .diff { color: var(--ink); margin-bottom: 4px; white-space: pre-line; }
+  .changelogItem .diff .old { color: var(--ink-soft); text-decoration: line-through; }
+  .changelogItem .diff .new { color: var(--ink); font-weight: 600; }
+  .changelogItem .src { font-size: 11.5px; }
+  .changelogItem .src a { color: var(--orange); }
+  .changelogList__empty { font-size: 13px; color: var(--ink-soft); font-style: italic; padding: 4px 2px; }
+
+  /* ---------- MODAL: CONFIRMAR ALTERAÇÕES (exige fonte) ---------- */
+  .modalOverlay {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    background: rgba(2, 8, 22, 0.72);
+    display: none;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 24px 16px;
+    overflow-y: auto;
+  }
+  .modalCard {
+    background: var(--blue-800);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    max-width: 620px;
+    width: 100%;
+    padding: 20px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+  }
+  .modalCard h3 { font-family: var(--serif); margin: 0 0 6px; font-size: 20px; color: var(--ink); }
+  .modalCard > p { margin: 0 0 16px; font-size: 13.5px; color: var(--ink-soft); }
+  .changeList { display: grid; gap: 14px; margin-bottom: 14px; }
+  .changeRow {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 12px;
+  }
+  .changeRow__meta { font-size: 13px; color: var(--ink); margin-bottom: 6px; }
+  .changeRow__diff { font-size: 13px; margin-bottom: 8px; }
+  .changeRow__diff .old { color: var(--ink-soft); text-decoration: line-through; }
+  .changeRow__diff .new { color: #7CE3A8; font-weight: 600; }
+  .changeRow__label { display: block; font-size: 11.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.02em; color: var(--ink-soft); margin-bottom: 4px; }
+  .changeSource, #confirmEditorName {
+    width: 100%;
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--ink);
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 9px 11px;
+    margin-bottom: 6px;
+  }
+  .changeSource::placeholder, #confirmEditorName::placeholder { color: var(--ink-soft); }
+  .changeSource:focus, #confirmEditorName:focus {
+    outline: none;
+    border-color: var(--orange);
+    box-shadow: 0 0 0 2px rgba(255, 122, 26, 0.25);
+  }
+  .changeFile { font-size: 12.5px; color: var(--ink-soft); margin-bottom: 4px; }
+  .changeFile__status { display: block; font-size: 11.5px; color: var(--ink-soft); min-height: 14px; }
+  .modalActions { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
 
   /* ---------- LEGEND ---------- */
   .legend {
@@ -252,13 +436,15 @@
     border: 1px solid var(--line);
     border-radius: var(--radius);
     font-size: 13.5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
   }
   .legend h4 {
     font-family: var(--serif);
     margin: 0 0 10px;
     font-size: 15px;
+    color: var(--ink);
   }
-  .legend ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .legend ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; color: var(--ink); }
   .legend li { display: flex; align-items: center; gap: 8px; }
   .swatch { width: 12px; height: 12px; border-radius: 2px; flex: none; }
   .legend .sources {
@@ -282,7 +468,7 @@
     gap: 12px;
     flex-wrap: wrap;
   }
-  footer a { text-decoration: underline; }
+  footer a { text-decoration: underline; color: var(--orange); }
 
   .bar {
     position: sticky;
@@ -291,8 +477,9 @@
     display: flex;
     justify-content: center;
     padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
-    background: var(--ink);
-    border-top: 1px solid var(--orange-line);
+    background: var(--blue-700);
+    border-top: 3px solid var(--orange);
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.25);
   }
   .bar__inner {
     max-width: 760px;
@@ -304,7 +491,7 @@
   }
   button {
     font-family: var(--sans);
-    font-weight: 600;
+    font-weight: 700;
     font-size: 14px;
     border-radius: 999px;
     border: 1px solid var(--orange);
@@ -314,11 +501,11 @@
     cursor: pointer;
   }
   button:hover { background: var(--orange-line); border-color: var(--orange-line); }
-  button.ghost { background: transparent; color: #EAF0FB; border-color: rgba(255,255,255,0.35); }
-  button.ghost:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.35); }
+  button.ghost { background: transparent; color: #fff; border-color: rgba(255, 255, 255, 0.4); }
+  button.ghost:hover { background: rgba(255, 255, 255, 0.1); border-color: rgba(255, 255, 255, 0.4); }
   button:disabled { opacity: 0.45; cursor: not-allowed; }
-  .status { font-size: 12.5px; color: #C7D3E8; }
-  .status.ok { color: #8FD4A8; font-weight: 600; }
+  .status { font-size: 12.5px; color: #E4ECFB; }
+  .status.ok { color: #9FE8B4; font-weight: 600; }
 
   @media (max-width: 420px) {
     .field { grid-template-columns: 1fr; gap: 3px; }
@@ -333,26 +520,53 @@
 
 <div class="hero">
   <p class="hero__kicker">Negociação Coletiva CAIXA · Data-Base 2026</p>
-  <h1>O que a Caixa já disse — e o que ainda falta dizer.</h1>
+  <h1>Mapa da Negociação 2026</h1>
   <p>Comparativo tema a tema entre o acordo vigente, as três propostas apresentadas pela Caixa e a pauta de reivindicações dos empregados.</p>
   <div class="stats">
     <div class="stat"><b id="statTemas">–</b><span>temas mapeados</span></div>
-    <div class="stat pending"><b id="statPend">–</b><span>lacunas sem resposta da Caixa</span></div>
     <div class="stat"><b id="statAt">–</b><span>última atualização</span></div>
   </div>
 </div>
 
+<div class="suggestSection" id="suggestSection">
+  <div class="suggestSection__head">
+    <div>
+      <h2>Viu um ponto importante que falta aqui?</h2>
+      <p>Envie sua sugestão — a gente revisa e pode incorporar ao comparativo.</p>
+    </div>
+    <button type="button" class="ghost-cta" id="btnSuggestToggle">Sugerir um ponto</button>
+  </div>
+  <form id="suggestForm" class="suggestForm" style="display:none;">
+    <textarea id="suggestText" maxlength="1000" rows="3" placeholder="Descreva o ponto importante que deveria estar no comparativo..." required></textarea>
+    <input id="suggestName" type="text" maxlength="80" placeholder="Seu nome ou setor (opcional)">
+    <div class="suggestForm__actions">
+      <button type="submit" id="btnSuggestSend">Enviar sugestão</button>
+      <button type="button" class="ghost" id="btnSuggestCancel">Cancelar</button>
+      <span class="status" id="suggestStatus"></span>
+    </div>
+  </form>
+  <div id="suggestList" class="suggestList"></div>
+</div>
+
 <main id="main"></main>
+
+<div class="changelogSection" id="changelogSection">
+  <h2>Histórico de alterações</h2>
+  <p>Toda edição feita na tabela acima fica registrada aqui, com a fonte informada por quem alterou.</p>
+  <div id="changelogList" class="changelogList"></div>
+</div>
 
 <div class="bar">
   <div class="bar__inner">
-    <span class="status" id="status">Modo leitura</span>
+    <span class="status" id="status">Carregando…</span>
     <div style="display:flex; gap:8px;">
       <button class="ghost" id="btnCancel" style="display:none;">Cancelar</button>
-      <button id="btnEdit">Editar página</button>
+      <button id="btnEdit" disabled>Editar página</button>
     </div>
   </div>
 </div>
+
+<div id="confirmOverlay" class="modalOverlay"></div>
 
 <script>
 (function () {
@@ -365,109 +579,110 @@
     rows: [
       { id:"reajuste", grupo:"Dinheiro no bolso", tema:"Reajuste salarial",
         hoje:"4,64% (2024)\nINPC + 0,6% (2025)",
-        p1:"",
-        p2:"\"Salário reajustado\" (percentual não informado)",
-        p3:"INPC + 0,6%",
+        p1:"", p1i:"",
+        p2:"\"Salário reajustado\" (percentual não informado)", p2i:"",
+        p3:"INPC + 0,6%", p3i:"Igual ao ACT atual",
         reiv:"Não especificado nesta minuta (tema tratado na mesa CCT Fenaban)" },
 
       { id:"premio", grupo:"Dinheiro no bolso", tema:"Prêmio extraordinário (IEO)",
         hoje:"Não previsto",
-        p1:"",
-        p2:"R$ 3.000 por empregado",
-        p3:"R$ 3.000 por empregado (mantido)",
+        p1:"", p1i:"",
+        p2:"R$ 3.000 por empregado", p2i:"",
+        p3:"R$ 3.000 por empregado (mantido)", p3i:"",
         reiv:"" },
 
       { id:"supercaixa", grupo:"Dinheiro no bolso", tema:"Super Caixa",
         hoje:"Regulamento próprio (fora do ACT)",
-        p1:"",
-        p2:"",
-        p3:"Dobro de premiação na habilitação inicial (50%) + regras simplificadas",
+        p1:"", p1i:"",
+        p2:"", p2i:"",
+        p3:"Dobro de premiação na habilitação inicial (50%) + regras simplificadas", p3i:"",
         reiv:"Modelo \"vendeu, recebeu\": pagamento integral de comissões e premiações; veda redução por metas ou indicadores de satisfação" },
 
       { id:"plr", grupo:"Dinheiro no bolso", tema:"PLR 2026/2027",
         hoje:"Regras de 2024/2025",
-        p1:"",
-        p2:"",
-        p3:"Mantém regras e cálculo de 2024/2025",
+        p1:"", p1i:"",
+        p2:"", p2i:"",
+        p3:"Mantém regras e cálculo de 2024/2025", p3i:"Igual ao ACT atual",
         reiv:"PLR Social adicional: 6% do lucro líquido, linear, sem teto; elimina limitador de 3 salários" },
 
       { id:"merito", grupo:"Dinheiro no bolso", tema:"Promoção por mérito",
         hoje:"Anual, ano-base anterior, pago em janeiro",
-        p1:"",
-        p2:"",
-        p3:"Critérios de autocuidado + resultado; retira metas coletivas",
+        p1:"", p1i:"",
+        p2:"", p2i:"",
+        p3:"Critérios de autocuidado + resultado; retira metas coletivas", p3i:"",
         reiv:"Mantém sistemática atual (anual, ano-base anterior, pago em janeiro)" },
 
       { id:"contribuicao", grupo:"Saúde Caixa", tema:"Contribuição da CAIXA",
         hoje:"Até 6,5% da folha",
-        p1:"Aumento da participação dos beneficiários (percentual não detalhado)",
-        p2:"Sobe para 8% (a partir de 2027)",
-        p3:"Sobe para 9% (a partir de 2027)",
+        p1:"Aumento da participação dos beneficiários (percentual não detalhado)", p1i:"",
+        p2:"Sobe para 8% (a partir de 2027)", p2i:"Melhorou +23% (6,5% → 8%)",
+        p3:"Sobe para 9% (a partir de 2027)", p3i:"Melhorou +38% (6,5% → 9%)",
         reiv:"Fim do teto; proporção 70% Caixa / 30% empregado" },
 
       { id:"idade", grupo:"Saúde Caixa", tema:"Cobrança por faixa etária",
         hoje:"Sem cobrança diferenciada",
-        p1:"Previa cobrança por faixa etária",
-        p2:"Nova tabela, ainda por faixa etária (percentuais reduzidos)",
-        p3:"Retira cobrança por faixa etária",
+        p1:"Previa cobrança por faixa etária", p1i:"",
+        p2:"Nova tabela, ainda por faixa etária (percentuais reduzidos)", p2i:"",
+        p3:"Retira cobrança por faixa etária", p3i:"",
         reiv:"Mantém modelo solidário (pacto intergeracional)" },
 
       { id:"jornada", grupo:"Rotina & direitos", tema:"Jornada de trabalho",
         hoje:"6h/dia (30h/semana); 8h com função gratificada",
-        p1:"",
-        p2:"",
-        p3:"Sem alteração",
+        p1:"", p1i:"",
+        p2:"", p2i:"",
+        p3:"Sem alteração", p3i:"Igual ao ACT atual",
         reiv:"5h/dia, 4 dias por semana (20h semanais)" },
 
       { id:"indenizacao", grupo:"Rotina & direitos", tema:"Indenização assalto/sinistro",
         hoje:"R$ 266.020,28",
-        p1:"",
-        p2:"",
-        p3:"Sem alteração",
+        p1:"", p1i:"",
+        p2:"", p2i:"",
+        p3:"Sem alteração", p3i:"Igual ao ACT atual",
         reiv:"R$ 1.000.000,00" },
 
       { id:"maternidade", grupo:"Rotina & direitos", tema:"Licença maternidade",
         hoje:"180 dias (incl. 30 de aleitamento)",
-        p1:"",
-        p2:"",
-        p3:"Sem alteração",
+        p1:"", p1i:"",
+        p2:"", p2i:"",
+        p3:"Sem alteração", p3i:"Igual ao ACT atual",
         reiv:"180 dias + aleitamento até os 2 anos" },
 
       { id:"remoto", grupo:"Rotina & direitos", tema:"Atendimento remoto Fígital/Genesys",
         hoje:"Regras vigentes",
-        p1:"",
-        p2:"",
-        p3:"Prazo de início ajustado de 5 para 10 min (até 12/2026)",
+        p1:"", p1i:"",
+        p2:"", p2i:"",
+        p3:"Prazo de início ajustado de 5 para 10 min (até 12/2026)", p3i:"",
         reiv:"" },
 
       { id:"transporte", grupo:"Rotina & direitos", tema:"Vale-transporte",
         hoje:"Empregado paga o que exceder 4% do salário",
-        p1:"",
-        p2:"",
-        p3:"Sem alteração",
+        p1:"", p1i:"",
+        p2:"", p2i:"",
+        p3:"Sem alteração", p3i:"Igual ao ACT atual",
         reiv:"Custeio 100% Caixa, sem custo ao empregado" },
     ]
   };
 
   var COLS = [
     { key:"hoje", label:"Como está hoje", cls:"field--hoje" },
-    { key:"p1",   label:"1ª Proposta",     cls:"field--p1" },
-    { key:"p2",   label:"2ª Proposta",     cls:"field--p2" },
-    { key:"p3",   label:"3ª Proposta / Final", cls:"field--p3" },
+    { key:"p1",   label:"1ª Proposta",     cls:"field--p1", indKey:"p1i" },
+    { key:"p2",   label:"2ª Proposta",     cls:"field--p2", indKey:"p2i" },
+    { key:"p3",   label:"3ª Proposta / Final", cls:"field--p3", indKey:"p3i" },
     { key:"reiv", label:"Reivindicação",   cls:"field--reiv" },
   ];
+
+  // Lista achatada de todos os campos rastreáveis (valor + indicador de cada
+  // coluna), usada para comparar o antes/depois de uma edição e montar o log.
+  var TRACKED_FIELDS = [];
+  COLS.forEach(function (c) {
+    TRACKED_FIELDS.push({ key: c.key, label: c.label });
+    if (c.indKey) TRACKED_FIELDS.push({ key: c.indKey, label: c.label + " — indicador" });
+  });
 
   // ---------------- STATE ----------------
   var DATA = SEED;
   var editing = false;
-
-  function countPending(rows) {
-    var n = 0;
-    rows.forEach(function (r) {
-      ["p1", "p2"].forEach(function (k) { if (!r[k] || !r[k].trim()) n++; });
-    });
-    return n;
-  }
+  var pendingChanges = [];
 
   function groupRows(rows) {
     var order = [], map = {};
@@ -487,7 +702,6 @@
     var groups = groupRows(DATA.rows);
 
     document.getElementById("statTemas").textContent = DATA.rows.length;
-    document.getElementById("statPend").textContent = countPending(DATA.rows);
     document.getElementById("statAt").textContent = DATA.updatedAt;
 
     var nav = document.getElementById("navRow");
@@ -509,13 +723,43 @@
     return s.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]+/g, "-");
   }
 
+  function deltaClass(text) {
+    var t = (text || "").toLowerCase();
+    if (t.indexOf("melhor") !== -1) return "delta--up";
+    if (t.indexOf("pior") !== -1) return "delta--down";
+    if (t.indexOf("igual") !== -1) return "delta--eq";
+    return "delta--neutral";
+  }
+
+  function badgeIcon(cls) {
+    if (cls === "delta--up") return "▲";
+    if (cls === "delta--down") return "▼";
+    if (cls === "delta--eq") return "=";
+    return "";
+  }
+
   function cardHtml(row) {
     var fields = COLS.map(function (c) {
       var val = row[c.key] || "";
       var pending = !val.trim();
-      return '<div class="field ' + c.cls + (pending ? " pending" : "") + '" data-row="' + row.id + '" data-col="' + c.key + '">' +
+      var badge = "";
+      if (c.indKey) {
+        var ind = row[c.indKey] || "";
+        if (val.trim() || ind.trim()) {
+          var cls = deltaClass(ind);
+          var icon = badgeIcon(cls);
+          badge = '<span class="delta ' + cls + '">' +
+            (icon ? '<i class="delta__icon">' + icon + '</i>' : "") +
+            '<span class="delta__text" data-row="' + row.id + '" data-col="' + c.indKey + '" contenteditable="false">' + escapeHtml(ind) + '</span>' +
+          '</span>';
+        }
+      }
+      return '<div class="field ' + c.cls + (pending ? " pending" : "") + '">' +
         '<dt>' + c.label + '</dt>' +
-        '<dd contenteditable="false">' + escapeHtml(val) + '</dd>' +
+        '<div class="fieldValue">' +
+          badge +
+          '<dd data-row="' + row.id + '" data-col="' + c.key + '" contenteditable="false">' + escapeHtml(val) + '</dd>' +
+        '</div>' +
       '</div>';
     }).join("");
     return '<article class="card"><h3>' + escapeHtml(row.tema) + '</h3><dl style="margin:0;">' + fields + '</dl></article>';
@@ -532,13 +776,20 @@
       '<li><span class="swatch" style="background:var(--c-reiv)"></span> Reivindicações dos Empregados (Minuta 2026–2028)</li>' +
       '<li><span class="swatch" style="background:var(--pending-line)"></span> Sem informação confirmada — pendente</li>' +
       '</ul>' +
+      '<h4 style="margin-top:14px;">Indicador nas propostas</h4>' +
+      '<ul>' +
+      '<li><span class="delta delta--up" style="margin:0;"><i class="delta__icon">▲</i><span class="delta__text">Melhorou</span></span> em relação ao ACT atual (2024–2026)</li>' +
+      '<li><span class="delta delta--down" style="margin:0;"><i class="delta__icon">▼</i><span class="delta__text">Piorou</span></span> em relação ao ACT atual</li>' +
+      '<li><span class="delta delta--eq" style="margin:0;"><i class="delta__icon">=</i><span class="delta__text">Igual</span></span> ao ACT atual, sem mudança</li>' +
+      '<li><span class="delta delta--neutral" style="margin:0;"><span class="delta__text">Impacto a avaliar</span></span> — ainda sem uma avaliação definida</li>' +
+      '</ul>' +
       '<div class="sources">Fontes: ACT Geral CAIXA/CONTRAF 2024–2026 · Propostas 1ª (imagem-resumo), 2ª e 3ª/Final (Anexo I) · Minuta da Pauta de Reivindicações 2026–2028 · Comparativo do Sindicato dos Bancários. Revisado linha a linha contra os documentos originais.</div>' +
     '</div>';
   }
 
   function bindEditableHandlers() {
-    document.querySelectorAll(".field dd").forEach(function (dd) {
-      dd.setAttribute("contenteditable", editing ? "true" : "false");
+    document.querySelectorAll("[data-row][data-col]").forEach(function (el) {
+      el.setAttribute("contenteditable", editing ? "true" : "false");
     });
   }
 
@@ -553,11 +804,11 @@
 
   function collectFromDom() {
     var rows = DATA.rows.map(function (r) { return Object.assign({}, r); });
-    document.querySelectorAll(".field").forEach(function (f) {
-      var id = f.getAttribute("data-row");
-      var col = f.getAttribute("data-col");
+    document.querySelectorAll("[data-row][data-col]").forEach(function (el) {
+      var id = el.getAttribute("data-row");
+      var col = el.getAttribute("data-col");
       var row = rows.find(function (r) { return r.id === id; });
-      if (row) row[col] = f.querySelector("dd").innerText.trim();
+      if (row) row[col] = el.innerText.trim();
     });
     return rows;
   }
@@ -571,7 +822,17 @@
       btnCancel.style.display = "inline-block";
       setStatus("Editando — toque em qualquer campo colorido.");
     } else {
-      save();
+      var newRows = collectFromDom();
+      var changes = diffRows(DATA.rows, newRows);
+      if (!changes.length) {
+        editing = false;
+        btnEdit.textContent = "Editar página";
+        btnCancel.style.display = "none";
+        render();
+        setStatus("Nenhuma alteração detectada.");
+        return;
+      }
+      openConfirmModal(changes);
     }
   });
 
@@ -579,39 +840,77 @@
     editing = false;
     btnEdit.textContent = "Editar página";
     btnCancel.style.display = "none";
-    load();
+    render();
+    setStatus("Edição cancelada.");
   });
 
-  function save() {
-    var newRows = collectFromDom();
-    var newState = {
-      updatedAt: new Date().toLocaleDateString("pt-BR"),
-      rows: newRows
-    };
-    setStatus("Salvando…");
-    btnEdit.disabled = true;
+  // Compara o estado salvo com o que está no DOM e retorna só os campos que
+  // mudaram de fato — cada um vira uma linha no modal de confirmação, que
+  // exige uma fonte antes de deixar salvar.
+  function diffRows(oldRows, newRows) {
+    var changes = [];
+    newRows.forEach(function (newRow) {
+      var oldRow = oldRows.find(function (r) { return r.id === newRow.id; });
+      if (!oldRow) return;
+      TRACKED_FIELDS.forEach(function (f) {
+        var oldVal = (oldRow[f.key] || "").trim();
+        var newVal = (newRow[f.key] || "").trim();
+        if (oldVal !== newVal) {
+          changes.push({
+            rowId: newRow.id,
+            tema: newRow.tema,
+            col: f.key,
+            colLabel: f.label,
+            oldValue: oldVal,
+            newValue: newVal,
+            source: ""
+          });
+        }
+      });
+    });
+    return changes;
+  }
 
-    fetch("/api/data", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newState)
-    }).then(function (r) {
+  // Busca o estado mais recente do servidor (não o snapshot local, que pode
+  // estar desatualizado se alguém salvou algo enquanto esta pessoa editava) e
+  // aplica só os campos que ELA de fato alterou por cima dele. Isso evita que
+  // um "Salvar" sobrescreva silenciosamente — e sem deixar rastro no log — uma
+  // alteração concorrente de outra pessoa em outro campo.
+  function finishSave() {
+    return fetch("/api/data", { cache: "no-store" }).then(function (r) {
       if (!r.ok) throw new Error("http_" + r.status);
       return r.json();
-    }).then(function () {
-      DATA = newState;
-      btnEdit.disabled = false;
-      editing = false;
-      btnEdit.textContent = "Editar página";
-      btnCancel.style.display = "none";
-      render();
-      setStatus("Salvo ✅ — todos que abrirem a página verão esta versão.", true);
-    }).catch(function () {
-      btnEdit.disabled = false;
-      setStatus("Não deu para salvar agora. Tente de novo em instantes.");
+    }).then(function (freshData) {
+      var baseRows = (freshData && freshData.rows && freshData.rows.length) ? freshData.rows : DATA.rows;
+      var mergedRows = baseRows.map(function (r) { return Object.assign({}, r); });
+      pendingChanges.forEach(function (c) {
+        var row = mergedRows.find(function (r) { return r.id === c.rowId; });
+        if (row) row[c.col] = c.newValue;
+      });
+      var newState = {
+        updatedAt: new Date().toLocaleDateString("pt-BR"),
+        rows: mergedRows
+      };
+      return fetch("/api/data", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newState)
+      }).then(function (r) {
+        if (!r.ok) throw new Error("http_" + r.status);
+        return r.json();
+      }).then(function () {
+        DATA = newState;
+        editing = false;
+        btnEdit.textContent = "Editar página";
+        btnCancel.style.display = "none";
+        render();
+        setStatus("Salvo ✅ — alteração registrada no histórico e visível para todos.", true);
+      });
     });
   }
 
+  // Carrega os dados atuais antes de liberar o botão de edição, evitando que uma
+  // edição em andamento seja sobrescrita pelo retorno tardio deste fetch inicial.
   function load() {
     setStatus("Carregando…");
     fetch("/api/data", { cache: "no-store" }).then(function (r) {
@@ -625,12 +924,272 @@
       DATA = SEED;
       render();
       setStatus("Não deu para carregar as últimas alterações — mostrando a versão inicial.");
+    }).then(function () {
+      btnEdit.disabled = false;
     });
   }
+
+  // ---------------- CONFIRMAR ALTERAÇÃO (exige fonte) ----------------
+  var confirmOverlay = document.getElementById("confirmOverlay");
+
+  function truncate(s, n) {
+    var t = s || "(vazio)";
+    return t.length > n ? t.slice(0, n) + "…" : t;
+  }
+
+  function fileToBase64(file) {
+    return new Promise(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onload = function () { resolve(String(reader.result).split(",")[1] || ""); };
+      reader.onerror = function () { reject(new Error("file_read_error")); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function confirmModalHtml(changes) {
+    var rows = changes.map(function (c, i) {
+      return '<div class="changeRow">' +
+        '<div class="changeRow__meta"><b>' + escapeHtml(c.tema) + '</b> · ' + escapeHtml(c.colLabel) + '</div>' +
+        '<div class="changeRow__diff"><span class="old">' + escapeHtml(truncate(c.oldValue, 80)) + '</span> → <span class="new">' + escapeHtml(truncate(c.newValue, 80)) + '</span></div>' +
+        '<label class="changeRow__label">Fonte (link, ou anexe um PDF/imagem) *</label>' +
+        '<input type="text" class="changeSource" data-idx="' + i + '" placeholder="https://...">' +
+        '<input type="file" class="changeFile" data-idx="' + i + '" accept="application/pdf,image/png,image/jpeg,image/webp,image/gif">' +
+        '<span class="changeFile__status" data-idx="' + i + '"></span>' +
+      '</div>';
+    }).join("");
+    return '<div class="modalCard">' +
+      '<h3>Confirmar alterações</h3>' +
+      '<p>Cada alteração precisa de uma fonte (link, PDF ou imagem) para ficar registrada no histórico público da página.</p>' +
+      '<div class="changeList">' + rows + '</div>' +
+      '<label class="changeRow__label">Seu nome ou setor (opcional, vale para todas as alterações acima)</label>' +
+      '<input type="text" id="confirmEditorName" maxlength="80" placeholder="Ex.: João, Sindicato Regional SP">' +
+      '<div class="modalActions">' +
+        '<button type="button" id="btnConfirmSave">Confirmar e salvar</button>' +
+        '<button type="button" class="ghost" id="btnConfirmBack">Voltar a editar</button>' +
+        '<span class="status" id="confirmStatus"></span>' +
+      '</div>' +
+    '</div>';
+  }
+
+  function openConfirmModal(changes) {
+    pendingChanges = changes;
+    confirmOverlay.innerHTML = confirmModalHtml(changes);
+    confirmOverlay.style.display = "flex";
+    wireConfirmModalEvents();
+  }
+
+  function closeConfirmModal() {
+    confirmOverlay.style.display = "none";
+    confirmOverlay.innerHTML = "";
+    pendingChanges = [];
+  }
+
+  function wireConfirmModalEvents() {
+    document.getElementById("btnConfirmBack").addEventListener("click", function () {
+      closeConfirmModal();
+    });
+
+    document.querySelectorAll(".changeFile").forEach(function (input) {
+      input.addEventListener("change", function () {
+        var idx = Number(input.getAttribute("data-idx"));
+        var file = input.files && input.files[0];
+        if (!file) return;
+        var statusSpan = document.querySelector('.changeFile__status[data-idx="' + idx + '"]');
+        var sourceInput = document.querySelector('.changeSource[data-idx="' + idx + '"]');
+        if (file.size > 4 * 1024 * 1024) {
+          statusSpan.textContent = "Arquivo maior que 4MB — use um link em vez disso.";
+          input.value = "";
+          return;
+        }
+        statusSpan.textContent = "Enviando anexo…";
+        fileToBase64(file).then(function (base64) {
+          return fetch("/api/upload", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ filename: file.name, contentType: file.type, dataBase64: base64 })
+          });
+        }).then(function (r) {
+          if (!r.ok) return r.json().then(function (e) { throw new Error((e && e.error) || ("http_" + r.status)); });
+          return r.json();
+        }).then(function (data) {
+          sourceInput.value = data.url;
+          sourceInput.style.borderColor = "";
+          statusSpan.textContent = "Anexo enviado: " + file.name;
+        }).catch(function () {
+          statusSpan.textContent = "Não deu para enviar o anexo agora — tente um link.";
+        });
+      });
+    });
+
+    document.getElementById("btnConfirmSave").addEventListener("click", onConfirmSaveClick);
+  }
+
+  function onConfirmSaveClick() {
+    var confirmStatusEl = document.getElementById("confirmStatus");
+    var sourceInputs = document.querySelectorAll(".changeSource");
+    var missing = false;
+    sourceInputs.forEach(function (inp) {
+      if (!inp.value.trim()) {
+        inp.style.borderColor = "var(--pending-line)";
+        missing = true;
+      } else {
+        inp.style.borderColor = "";
+      }
+    });
+    if (missing) {
+      confirmStatusEl.textContent = "Preencha a fonte de todas as alterações antes de salvar.";
+      return;
+    }
+
+    var editorName = document.getElementById("confirmEditorName").value.trim();
+    sourceInputs.forEach(function (inp) {
+      var idx = Number(inp.getAttribute("data-idx"));
+      pendingChanges[idx].source = inp.value.trim();
+      pendingChanges[idx].editor = editorName || null;
+    });
+
+    var btn = document.getElementById("btnConfirmSave");
+    btn.disabled = true;
+    confirmStatusEl.textContent = "Salvando…";
+
+    fetch("/api/changelog", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ changes: pendingChanges })
+    }).then(function (r) {
+      if (!r.ok) return r.json().then(function (e) { throw new Error((e && e.error) || ("http_" + r.status)); });
+      return r.json();
+    }).then(function () {
+      return finishSave();
+    }).then(function () {
+      closeConfirmModal();
+      loadChangelog();
+    }).catch(function () {
+      btn.disabled = false;
+      confirmStatusEl.textContent = "Não deu para registrar a alteração agora. Tente de novo.";
+    });
+  }
+
+  // ---------------- HISTÓRICO DE ALTERAÇÕES ----------------
+  var changelogListEl = document.getElementById("changelogList");
+
+  function renderChangelog(list) {
+    if (!list || !list.length) {
+      changelogListEl.innerHTML = '<div class="changelogList__empty">Nenhuma alteração registrada ainda.</div>';
+      return;
+    }
+    changelogListEl.innerHTML = list.map(function (c) {
+      var when = "";
+      try {
+        when = new Date(c.at).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
+      } catch (e) {}
+      var who = c.editor ? escapeHtml(c.editor) : "Anônimo";
+      var isLink = /^https?:\/\//i.test(c.source || "");
+      var srcHtml = isLink
+        ? '<a href="' + escapeHtml(c.source) + '" target="_blank" rel="noopener noreferrer nofollow">Ver fonte</a>'
+        : escapeHtml(c.source || "");
+      return '<div class="changelogItem">' +
+        '<div class="meta">' + who + (when ? " · " + when : "") + ' · ' + escapeHtml(c.tema) + ' · ' + escapeHtml(c.colLabel) + '</div>' +
+        '<div class="diff"><span class="old">' + escapeHtml(truncate(c.oldValue, 100)) + '</span> → <span class="new">' + escapeHtml(truncate(c.newValue, 100)) + '</span></div>' +
+        '<div class="src">Fonte: ' + srcHtml + '</div>' +
+      '</div>';
+    }).join("");
+  }
+
+  function loadChangelog() {
+    fetch("/api/changelog", { cache: "no-store" }).then(function (r) {
+      if (!r.ok) throw new Error("http_" + r.status);
+      return r.json();
+    }).then(function (data) {
+      renderChangelog(data && data.changes);
+    }).catch(function () {
+      changelogListEl.innerHTML = '<div class="changelogList__empty">Não deu para carregar o histórico agora.</div>';
+    });
+  }
+
+  // ---------------- SUGESTÕES ----------------
+  var btnSuggestToggle = document.getElementById("btnSuggestToggle");
+  var suggestForm = document.getElementById("suggestForm");
+  var btnSuggestCancel = document.getElementById("btnSuggestCancel");
+  var btnSuggestSend = document.getElementById("btnSuggestSend");
+  var suggestText = document.getElementById("suggestText");
+  var suggestName = document.getElementById("suggestName");
+  var suggestStatusEl = document.getElementById("suggestStatus");
+  var suggestListEl = document.getElementById("suggestList");
+
+  function setSuggestStatus(text, ok) {
+    suggestStatusEl.textContent = text || "";
+    suggestStatusEl.classList.toggle("ok", !!ok);
+  }
+
+  btnSuggestToggle.addEventListener("click", function () {
+    var opening = suggestForm.style.display === "none";
+    suggestForm.style.display = opening ? "grid" : "none";
+    if (opening) suggestText.focus();
+  });
+
+  btnSuggestCancel.addEventListener("click", function () {
+    suggestForm.style.display = "none";
+    suggestForm.reset();
+    setSuggestStatus("");
+  });
+
+  function renderSuggestions(list) {
+    if (!list || !list.length) {
+      suggestListEl.innerHTML = '<div class="suggestList__empty">Nenhuma sugestão enviada ainda. Seja o primeiro!</div>';
+      return;
+    }
+    suggestListEl.innerHTML = list.map(function (s) {
+      var when = "";
+      try {
+        when = new Date(s.createdAt).toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
+      } catch (e) {}
+      var who = s.name ? escapeHtml(s.name) : "Anônimo";
+      return '<div class="suggestItem"><p>' + escapeHtml(s.text) + '</p><div class="meta">' + who + (when ? " · " + when : "") + '</div></div>';
+    }).join("");
+  }
+
+  function loadSuggestions() {
+    fetch("/api/suggestions", { cache: "no-store" }).then(function (r) {
+      if (!r.ok) throw new Error("http_" + r.status);
+      return r.json();
+    }).then(function (data) {
+      renderSuggestions(data && data.suggestions);
+    }).catch(function () {
+      suggestListEl.innerHTML = '<div class="suggestList__empty">Não deu para carregar as sugestões agora.</div>';
+    });
+  }
+
+  suggestForm.addEventListener("submit", function (ev) {
+    ev.preventDefault();
+    var text = suggestText.value.trim();
+    if (!text) return;
+    btnSuggestSend.disabled = true;
+    setSuggestStatus("Enviando…");
+    fetch("/api/suggestions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: text, name: suggestName.value.trim() })
+    }).then(function (r) {
+      if (!r.ok) return r.json().then(function (e) { throw new Error((e && e.error) || ("http_" + r.status)); });
+      return r.json();
+    }).then(function () {
+      btnSuggestSend.disabled = false;
+      suggestForm.reset();
+      suggestForm.style.display = "none";
+      setSuggestStatus("Sugestão enviada — obrigado! Vamos revisar. ✅", true);
+      loadSuggestions();
+    }).catch(function () {
+      btnSuggestSend.disabled = false;
+      setSuggestStatus("Não deu para enviar agora. Tente de novo em instantes.");
+    });
+  });
 
   // ---------------- INIT ----------------
   render();
   load();
+  loadSuggestions();
+  loadChangelog();
 })();
 </script>
 </body>

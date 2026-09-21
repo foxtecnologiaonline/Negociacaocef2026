@@ -1,4 +1,5 @@
 const { put, list } = require('@vercel/blob');
+const { readBody } = require('../lib/body');
 
 const PATHNAME = 'comparativo-data.json';
 
@@ -27,10 +28,18 @@ module.exports = async (req, res) => {
 
   if (req.method === 'POST' || req.method === 'PUT') {
     try {
-      const chunks = [];
-      for await (const chunk of req) chunks.push(chunk);
-      const bodyStr = Buffer.concat(chunks).toString('utf8');
-      const data = JSON.parse(bodyStr);
+      const data = await readBody(req);
+
+      if (!data || typeof data !== 'object' || !Array.isArray(data.rows)) {
+        res.status(400).json({ ok: false, error: 'invalid_payload: "rows" deve ser um array' });
+        return;
+      }
+      for (const row of data.rows) {
+        if (!row || typeof row !== 'object' || typeof row.id !== 'string' || !row.id) {
+          res.status(400).json({ ok: false, error: 'invalid_payload: cada linha precisa de um "id"' });
+          return;
+        }
+      }
 
       const blob = await put(PATHNAME, JSON.stringify(data), {
         access: 'public',
