@@ -47,6 +47,25 @@ As sugestões ficam listadas na própria página, mais recentes primeiro, para r
 incorporado automaticamente ao comparativo; quem administra a página decide o que entra, editando
 manualmente em **"Editar página"**.
 
+## Analytics e tracking
+
+A página injeta os scripts do **Vercel Web Analytics** e **Vercel Speed Insights**
+(`/_vercel/insights/script.js` e `/_vercel/speed-insights/script.js`), que a própria
+Vercel serve automaticamente — sem necessidade de build ou dependência de npm.
+
+Para os dados começarem a aparecer, é preciso **ativar os dois recursos no projeto na
+Vercel** (isso não tem endpoint de API — só dá pra ligar no painel):
+
+1. Abra o projeto em vercel.com → aba **Analytics** → **Enable**
+2. Abra a aba **Speed Insights** → **Enable**
+
+Depois de ativado (pode levar alguns minutos para os primeiros dados aparecerem):
+
+- **Analytics** (visitas, páginas, origem, dispositivo): aba **Analytics** do projeto
+- **Speed Insights** (Core Web Vitals — LCP, CLS, INP etc.): aba **Speed Insights** do projeto
+
+Ambos são gratuitos no plano Hobby dentro do limite de eventos mensal.
+
 ## Indicador de melhora/piora nas propostas
 
 Cada proposta da Caixa (1ª, 2ª, 3ª/Final) exibe um selo antes do valor indicando se aquele ponto
