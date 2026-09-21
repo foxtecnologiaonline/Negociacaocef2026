@@ -346,46 +346,6 @@
   .summaryBadge__cap { font-size: 9.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.02em; color: var(--ink-soft); }
   .summaryBadge .delta { margin: 0; }
 
-  /* ---------- VOTAÇÃO NOS CARDS (Aceitável / Insuficiente) ---------- */
-  .voteBox {
-    margin: 0 16px 14px;
-    padding: 12px;
-    background: var(--paper);
-    border: 1px solid var(--line);
-    border-radius: 8px;
-  }
-  .voteBox__question { font-size: 12.5px; color: var(--ink-soft); margin: 0 0 8px; }
-  .voteBox__buttons { display: flex; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
-  .voteBtn {
-    flex: 1 1 auto;
-    font-size: 13px;
-    font-weight: 600;
-    padding: 12px;
-    border-radius: 999px;
-    border: 1px solid var(--line);
-    background: var(--paper-card);
-    color: var(--ink);
-  }
-  .voteBtn:hover { border-color: var(--ink-soft); }
-  .voteBtn--aceitavel.voteBtn--active { background: rgba(21, 138, 82, 0.10); border: 1px solid rgba(21, 138, 82, 0.35); color: #157F4D; }
-  .voteBtn--insuficiente.voteBtn--active { background: rgba(199, 43, 43, 0.10); border: 1px solid rgba(199, 43, 43, 0.35); color: #C72B2B; }
-  .voteBar {
-    height: 8px;
-    border-radius: 999px;
-    overflow: hidden;
-    background: var(--paper-card);
-    border: 1px solid var(--line);
-    margin-bottom: 6px;
-  }
-  .voteBar__fill {
-    height: 100%;
-    width: 0%;
-    background: #157F4D;
-    border-radius: 999px;
-    transition: width 0.3s ease;
-  }
-  .voteBox__counts { font-size: 11.5px; color: var(--ink-soft); }
-
   /* ---------- SUGESTÕES ---------- */
   .suggestSection {
     max-width: var(--content-max);
@@ -911,7 +871,6 @@
 
     document.body.classList.toggle("editing", editing);
     bindEditableHandlers();
-    renderAllVoteBoxes();
   }
 
   function slug(s) {
@@ -1065,7 +1024,7 @@
         '</div>' +
       '</div>';
     }).join("");
-    return '<article class="card"><h3>' + escapeHtml(row.tema) + '</h3><dl style="margin:0;">' + fields + '</dl>' + voteBoxHtml(row) + '</article>';
+    return '<article class="card"><h3>' + escapeHtml(row.tema) + '</h3><dl style="margin:0;">' + fields + '</dl></article>';
   }
 
   function summaryHtml(groups) {
@@ -1458,105 +1417,10 @@
     });
   });
 
-  // ---------------- VOTAÇÃO (Aceitável / Insuficiente) ----------------
-  // O voto de cada visitante é identificado no servidor por um cookie httpOnly
-  // (ver api/votes.js) — não depende mais do localStorage, que era fácil de
-  // burlar (bastava limpar o navegador ou chamar a API direto) e não impedia
-  // votos duplicados de verdade.
-  var VOTES = {};
-  var MY_VOTES = {};
-
-  function voteBoxHtml(row) {
-    return '<div class="voteBox" data-vote-row="' + row.id + '">' +
-      '<p class="voteBox__question">A 3ª Proposta / Final é aceitável para este tema?</p>' +
-      '<div class="voteBox__buttons">' +
-        '<button type="button" class="voteBtn voteBtn--aceitavel" data-choice="aceitavel">✓ Aceitável</button>' +
-        '<button type="button" class="voteBtn voteBtn--insuficiente" data-choice="insuficiente">✕ Insuficiente</button>' +
-      '</div>' +
-      '<div class="voteBar"><span class="voteBar__fill"></span></div>' +
-      '<div class="voteBox__counts">Carregando votos…</div>' +
-    '</div>';
-  }
-
-  function renderVoteBox(rowId) {
-    var box = document.querySelector('.voteBox[data-vote-row="' + rowId + '"]');
-    if (!box) return;
-    var tally = VOTES[rowId] || { aceitavel: 0, insuficiente: 0 };
-    var total = (tally.aceitavel || 0) + (tally.insuficiente || 0);
-    var pctAceitavel = total ? Math.round((tally.aceitavel / total) * 100) : 0;
-    box.querySelector(".voteBar__fill").style.width = pctAceitavel + "%";
-    box.querySelector(".voteBox__counts").textContent = total
-      ? ("Aceitável " + pctAceitavel + "% (" + tally.aceitavel + ") · Insuficiente " + (100 - pctAceitavel) + "% (" + tally.insuficiente + ") · " + total + " voto" + (total === 1 ? "" : "s"))
-      : "Ainda sem votos — seja o primeiro.";
-    var mine = MY_VOTES[rowId] || "";
-    box.querySelectorAll(".voteBtn").forEach(function (btn) {
-      btn.classList.toggle("voteBtn--active", btn.getAttribute("data-choice") === mine);
-    });
-  }
-
-  function renderAllVoteBoxes() {
-    document.querySelectorAll(".voteBox").forEach(function (box) {
-      renderVoteBox(box.getAttribute("data-vote-row"));
-    });
-  }
-
-  function loadVotes() {
-    return fetch("/api/votes", { cache: "no-store" }).then(function (r) {
-      if (!r.ok) throw new Error("http_" + r.status);
-      return r.json();
-    }).then(function (data) {
-      VOTES = (data && data.votes) || {};
-      MY_VOTES = (data && data.myVotes) || {};
-      renderAllVoteBoxes();
-    }).catch(function () {
-      // silencioso — mantém os contadores como estavam
-    });
-  }
-
-  document.getElementById("main").addEventListener("click", function (ev) {
-    var btn = ev.target.closest(".voteBtn");
-    if (!btn) return;
-    var box = btn.closest(".voteBox");
-    var rowId = box.getAttribute("data-vote-row");
-    var choice = btn.getAttribute("data-choice");
-    var previousChoice = MY_VOTES[rowId] || "";
-    if (previousChoice === choice) return;
-
-    // Atualização otimista: reflete o voto na hora, sem esperar o servidor.
-    var tally = VOTES[rowId] || { aceitavel: 0, insuficiente: 0 };
-    if (previousChoice && tally[previousChoice] > 0) tally[previousChoice] -= 1;
-    tally[choice] = (tally[choice] || 0) + 1;
-    VOTES[rowId] = tally;
-    MY_VOTES[rowId] = choice;
-    renderVoteBox(rowId);
-
-    fetch("/api/votes", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ rowId: rowId, choice: choice })
-    }).then(function (r) {
-      if (!r.ok) return r.json().then(function (e) { throw new Error((e && e.error) || ("http_" + r.status)); });
-      return r.json();
-    }).then(function (data) {
-      if (data && data.votes) { VOTES = data.votes; MY_VOTES = data.myVotes || MY_VOTES; renderAllVoteBoxes(); }
-      // Reconfirma com o servidor pouco depois: a maioria das leituras
-      // concorrentes com outro voto quase simultâneo se resolve num segundo
-      // fetch, já que o registro por votante evita duplicar contagem.
-      setTimeout(loadVotes, 1500);
-    }).catch(function () {
-      // mantém o estado otimista mesmo se a confirmação do servidor falhar
-    });
-  });
-
-  // Sem infraestrutura de push (websocket/SSE) neste projeto estático — o poll
-  // periódico é a forma mais simples de aproximar "tempo real" nos relatórios.
-  setInterval(loadVotes, 20000);
-
   // ---------------- INIT ----------------
   render();
   load();
   loadSuggestions();
-  loadVotes();
 })();
 </script>
 <script defer src="/_vercel/insights/script.js"></script>

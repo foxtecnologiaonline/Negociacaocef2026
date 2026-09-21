@@ -6,15 +6,13 @@ de reivindicações dos empregados na Data-Base 2026.
 ## Como funciona
 
 - `index.html` — página estática (sem build), busca e salva dados via `/api/data`, `/api/suggestions`,
-  `/api/changelog`, `/api/upload` e `/api/votes`
+  `/api/changelog` e `/api/upload`
 - `api/data.js` — função serverless (Node) que lê/grava o comparativo (JSON) no Vercel Blob Storage
 - `api/suggestions.js` — função serverless que lê/grava as sugestões enviadas pelos visitantes
 - `api/changelog.js` — função serverless que registra o histórico de alterações (o quê mudou, fonte
   informada, quem editou e quando)
 - `api/upload.js` — função serverless que recebe um PDF/imagem anexado como fonte e grava no Blob
   Storage, devolvendo o link público do arquivo
-- `api/votes.js` — função serverless que lê/grava a contagem de votos (Aceitável/Insuficiente) por
-  tema, dados na 3ª Proposta / Final
 - `lib/body.js` — leitura do corpo da requisição compartilhada pelas funções acima
 - `package.json` — dependência `@vercel/blob`
 
@@ -90,19 +88,5 @@ vs. Reivindicação) de todos os temas em um só lugar, sem precisar rolar cada 
 informação dos selos dentro dos cards, só que reunida para dar uma visão geral rápida de onde a
 proposta final está ganhando ou ficando devendo.
 
-## Votação por tema (Aceitável / Insuficiente)
-
-Cada card tem uma enquete simples: qualquer visitante pode marcar se acha a 3ª Proposta / Final
-**aceitável** ou **insuficiente** para aquele tema específico. O resultado (contagem e percentual)
-aparece imediatamente no próprio card, numa barra de proporção, e é salvo em `/api/votes`
-(Vercel Blob, arquivo `comparativo-votes.json`).
-
-Cada visitante é identificado por um cookie `voter_id` httpOnly, gerado pelo próprio `/api/votes`
-no primeiro acesso — o voto fica registrado no servidor por votante (`comparativo-votes.json` guarda
-`{ voters: { <voter_id>: { <rowId>: "aceitavel" | "insuficiente" } } }` e a contagem exibida é
-calculada a partir desse mapa). Isso permite trocar de opinião a qualquer momento (o voto anterior
-do mesmo tema é substituído, não somado de novo) e impede duplicar voto só limpando o `localStorage`
-ou chamando a API direto, como acontecia antes — falta só um voto por pessoa "de verdade" (várias
-contas de e-mail/CPF), que exigiria login. Não há servidor de tempo real (WebSocket/SSE) neste
-projeto estático: a página busca os votos ao carregar e depois a cada 20s, o que já é o suficiente
-para os relatórios acompanharem a votação "ao vivo" sem precisar recarregar.
+A página é somente informativa e de edição colaborativa do comparativo — não há enquete ou
+votação de qualquer tipo (funcionalidade removida deliberadamente).
