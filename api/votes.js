@@ -8,23 +8,26 @@ const COOKIE_NAME = 'voter_id';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365 * 2; // 2 anos
 const MAX_WRITE_ATTEMPTS = 5;
 
+// Importante: NÃO engolir erro aqui. get() retorna null (sem lançar) quando o
+// blob genuinamente não existe ainda — isso sim é "vazio" de verdade. Qualquer
+// outra falha (rede, timeout, erro transitório da origem) precisa subir como
+// exceção para quem chamou tratar: se um GET tratasse essa falha como "vazio",
+// a página mostraria 0 votos mesmo com voto salvo (a contagem "piscava"); se um
+// POST tratasse como "vazio", ele achava que não existia voto de ninguém ainda
+// e gravava allowOverwrite sem ifMatch, apagando os votos de todo mundo.
 async function readCurrent() {
-  try {
-    // useCache: false ignora o cache de CDN do Blob (que por padrão serve o
-    // conteúdo antigo por hora/dias) e lê direto da origem — sem isso, um
-    // voto seguinte podia ler uma versão desatualizada e, ao gravar de volta,
-    // apagar o voto anterior (era a causa dos votos "sumirem").
-    const result = await get(PATHNAME, {
-      access: 'public',
-      useCache: false,
-      token: process.env.BLOB_READ_WRITE_TOKEN,
-    });
-    if (!result || !result.stream) return { data: null, etag: null };
-    const text = await new Response(result.stream).text();
-    return { data: JSON.parse(text), etag: result.blob.etag };
-  } catch (e) {
-    return { data: null, etag: null };
-  }
+  // useCache: false ignora o cache de CDN do Blob (que por padrão serve o
+  // conteúdo antigo por hora/dias) e lê direto da origem — sem isso, um voto
+  // seguinte podia ler uma versão desatualizada e, ao gravar de volta, apagar
+  // o voto anterior (era a causa original dos votos "sumirem").
+  const result = await get(PATHNAME, {
+    access: 'public',
+    useCache: false,
+    token: process.env.BLOB_READ_WRITE_TOKEN,
+  });
+  if (!result || !result.stream) return { data: null, etag: null };
+  const text = await new Response(result.stream).text();
+  return { data: JSON.parse(text), etag: result.blob.etag };
 }
 
 function getVoterId(req) {
@@ -70,9 +73,16 @@ module.exports = async (req, res) => {
   }
 
   if (req.method === 'GET') {
-    const current = await readCurrent();
-    const voters = (current.data && current.data.voters && typeof current.data.voters === 'object') ? current.data.voters : {};
-    res.status(200).json({ votes: tallyAll(voters), myVotes: voters[voterId] || {} });
+    try {
+      const current = await readCurrent();
+      const voters = (current.data && current.data.voters && typeof current.data.voters === 'object') ? current.data.voters : {};
+      res.status(200).json({ votes: tallyAll(voters), myVotes: voters[voterId] || {} });
+    } catch (e) {
+      // Erro real de leitura (não "ainda não existe voto"): responde com falha
+      // em vez de fingir "0 votos", para o front-end manter o último estado
+      // bom em vez de sobrescrever a tela com um resultado vazio incorreto.
+      res.status(503).json({ ok: false, error: String(e && e.message || e) });
+    }
     return;
   }
 
