@@ -7,6 +7,13 @@ const CHOICES = ['aceitavel', 'insuficiente'];
 const COOKIE_NAME = 'voter_id';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365 * 2; // 2 anos
 const MAX_WRITE_ATTEMPTS = 5;
+const MAX_ROW_ID_LEN = 200;
+// Só aceita cookies no formato exato gerado por crypto.randomUUID() — qualquer
+// outro valor (forjado à mão, ou algo como "__proto__") é tratado como se não
+// houvesse cookie, e um novo é emitido. Isso também fecha, de graça, o vetor
+// de poluição de protótipo: um voterId que nunca chega a ser usado como chave
+// não tem como disparar o setter especial de "__proto__".
+const VOTER_ID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 // Importante: NÃO engolir erro aqui. get() retorna null (sem lançar) quando o
 // blob genuinamente não existe ainda — isso sim é "vazio" de verdade. Qualquer
@@ -34,7 +41,9 @@ function getVoterId(req) {
   const header = req.headers && req.headers.cookie;
   if (!header) return '';
   const match = String(header).match(/(?:^|;\s*)voter_id=([^;]+)/);
-  return match ? decodeURIComponent(match[1]) : '';
+  if (!match) return '';
+  const value = decodeURIComponent(match[1]);
+  return VOTER_ID_RE.test(value) ? value : '';
 }
 
 function setVoterCookie(res, voterId) {
@@ -45,7 +54,15 @@ function setVoterCookie(res, voterId) {
 }
 
 function tallyAll(voters) {
-  const votes = {};
+  // Object.create(null) em vez de {}: rowId e voterId vêm de fora (POST body e
+  // cookie) e viram chave de objeto por bracket notation (obj[rowId] = ...).
+  // Num objeto comum, a chave "__proto__" não é uma propriedade normal — é um
+  // getter/setter herdado que troca o protótipo do objeto por baixo dos panos,
+  // fazendo o voto "desaparecer" (nunca vira propriedade própria, então nem é
+  // serializado no JSON.stringify) sem erro nenhum. Um objeto sem protótipo
+  // não tem esse getter/setter especial, então "__proto__" vira só mais uma
+  // string de chave, como qualquer outra.
+  const votes = Object.create(null);
   for (const vid in voters) {
     const rowChoices = voters[vid];
     if (!rowChoices || typeof rowChoices !== 'object') continue;
@@ -75,7 +92,7 @@ module.exports = async (req, res) => {
   if (req.method === 'GET') {
     try {
       const current = await readCurrent();
-      const voters = (current.data && current.data.voters && typeof current.data.voters === 'object') ? current.data.voters : {};
+      const voters = (current.data && current.data.voters && typeof current.data.voters === 'object') ? current.data.voters : Object.create(null);
       res.status(200).json({ votes: tallyAll(voters), myVotes: voters[voterId] || {} });
     } catch (e) {
       // Erro real de leitura (não "ainda não existe voto"): responde com falha
@@ -96,6 +113,10 @@ module.exports = async (req, res) => {
         res.status(400).json({ ok: false, error: 'invalid_payload: "rowId" é obrigatório' });
         return;
       }
+      if (rowId.length > MAX_ROW_ID_LEN) {
+        res.status(400).json({ ok: false, error: 'invalid_payload: "rowId" muito longo' });
+        return;
+      }
       if (CHOICES.indexOf(choice) === -1) {
         res.status(400).json({ ok: false, error: 'invalid_payload: "choice" deve ser "aceitavel" ou "insuficiente"' });
         return;
@@ -109,10 +130,11 @@ module.exports = async (req, res) => {
       let outcome = null;
       for (let attempt = 0; attempt < MAX_WRITE_ATTEMPTS; attempt++) {
         const current = await readCurrent();
-        const voters = (current.data && current.data.voters && typeof current.data.voters === 'object') ? current.data.voters : {};
-        const mine = (voters[voterId] && typeof voters[voterId] === 'object') ? Object.assign({}, voters[voterId]) : {};
+        const voters = (current.data && current.data.voters && typeof current.data.voters === 'object') ? current.data.voters : Object.create(null);
+        const existingMine = voters[voterId];
+        const mine = Object.assign(Object.create(null), (existingMine && typeof existingMine === 'object') ? existingMine : null);
         mine[rowId] = choice;
-        const nextVoters = Object.assign({}, voters);
+        const nextVoters = Object.assign(Object.create(null), voters);
         nextVoters[voterId] = mine;
 
         const putOptions = {
